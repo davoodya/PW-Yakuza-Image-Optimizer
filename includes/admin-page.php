@@ -134,11 +134,6 @@ function yio_admin_page()
 |--------------------------------------------------------------------------
 */
 
-function yio_tab_general()
-{
-    echo '<h2>General Settings</h2>';
-    echo '<p>This section will be completed in the next step.</p>';
-}
 
 function yio_tab_watermark()
 {
