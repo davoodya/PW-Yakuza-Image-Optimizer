@@ -128,6 +128,14 @@ function yio_default_settings()
         'background_processing' => 1,
 
         'bulk_batch_size' => 20,
+		
+		'background_processing' => 1,
+
+		'dry_run' => 0,
+
+		'bulk_limit' => 0,
+
+		'include_webp' => 0,
 
         /*
         |--------------------------------------------------------------------------
