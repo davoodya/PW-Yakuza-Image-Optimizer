@@ -233,9 +233,7 @@ function yio_tab_bulk()
 
         </tr>
 
-
     </table>
-
 
     <?php
 
