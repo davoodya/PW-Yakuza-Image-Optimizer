@@ -218,3 +218,4 @@ function yio_log($message)
 
     error_log('[YIO] ' . $message);
 }
+
