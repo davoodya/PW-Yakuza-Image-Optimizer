@@ -85,6 +85,7 @@ require_once YIO_INC . 'admin-page.php';
 require_once YIO_INC . 'admin/general.php';
 require_once YIO_INC . 'admin/watermark.php';
 require_once YIO_INC . 'admin/seo.php';
+require_once YIO_INC . 'admin/backup.php';
 require_once YIO_INC . 'logger.php';
 require_once YIO_INC . 'backup.php';
 require_once YIO_INC . 'restore.php';

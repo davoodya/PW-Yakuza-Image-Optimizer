@@ -40,6 +40,10 @@ function yio_default_settings()
         'enabled' => 1,
 
         'backup_original' => 1,
+		
+		'restore_method' => 'replace',
+
+		'image_comparison' => 1,
 
         'process_new_uploads' => 1,
 
