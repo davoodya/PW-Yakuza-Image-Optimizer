@@ -79,21 +79,54 @@ if (!yio_check_requirements()) {
 |--------------------------------------------------------------------------
 */
 
-require_once YIO_INC . 'helper.php';
-require_once YIO_INC . 'settings.php';
-require_once YIO_INC . 'admin-page.php';
-require_once YIO_INC . 'admin/general.php';
-require_once YIO_INC . 'admin/watermark.php';
-require_once YIO_INC . 'admin/seo.php';
-require_once YIO_INC . 'admin/backup.php';
-require_once YIO_INC . 'admin/bulk.php';
-require_once YIO_INC . 'logger.php';
-require_once YIO_INC . 'backup.php';
-require_once YIO_INC . 'restore.php';
-require_once YIO_INC . 'watermark.php';
-require_once YIO_INC . 'seo.php';
-require_once YIO_INC . 'image-processor.php';
-require_once YIO_INC . 'bulk.php';
+/*
+|--------------------------------------------------------------------------
+| Includes
+|--------------------------------------------------------------------------
+*/
+
+
+$yio_files = [
+
+    'helper.php',
+    'settings.php',
+
+    'logger.php',
+
+    'admin-page.php',
+
+    'admin/general.php',
+    'admin/watermark.php',
+    'admin/seo.php',
+    'admin/backup.php',
+    'admin/bulk.php',
+
+    'backup.php',
+    'restore.php',
+
+    'watermark.php',
+    'seo.php',
+
+    'image-processor.php',
+
+    'bulk.php',
+
+];
+
+
+foreach ($yio_files as $file) {
+
+
+    $path = YIO_INC . $file;
+
+
+    if (file_exists($path)) {
+
+        require_once $path;
+
+    }
+
+}
 
 /*
 |--------------------------------------------------------------------------
