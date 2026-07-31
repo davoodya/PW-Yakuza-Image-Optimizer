@@ -1,7 +1,9 @@
 ﻿<?php
+
 if (!defined('ABSPATH')) {
     exit;
 }
+
 
 /*
 |--------------------------------------------------------------------------
@@ -11,21 +13,45 @@ if (!defined('ABSPATH')) {
 
 function yio_get_options()
 {
-    return get_option('yio_settings', []);
+
+    if (function_exists('yio_default_settings')) {
+
+        return wp_parse_args(
+            get_option('yio_settings', []),
+            yio_default_settings()
+        );
+
+    }
+
+
+    return get_option(
+        'yio_settings',
+        []
+    );
+
 }
+
+
 
 /*
 |--------------------------------------------------------------------------
-| Get Option
+| Single Option
 |--------------------------------------------------------------------------
 */
 
 function yio_get_option($key, $default = null)
 {
+
     $options = yio_get_options();
 
-    return $options[$key] ?? $default;
+
+    return isset($options[$key])
+        ? $options[$key]
+        : $default;
+
 }
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -38,18 +64,66 @@ function yio_upload_dir()
     return wp_upload_dir();
 }
 
+
+
 /*
 |--------------------------------------------------------------------------
-| Original Images Directory
+| Upload Base Path
+|--------------------------------------------------------------------------
+*/
+
+function yio_get_upload_path()
+{
+
+    $upload = wp_upload_dir();
+
+
+    return trailingslashit(
+        $upload['basedir']
+    );
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Original Directory
 |--------------------------------------------------------------------------
 */
 
 function yio_original_dir()
 {
-    $upload = wp_upload_dir();
 
-    return trailingslashit($upload['basedir']) . 'original-img/';
+    return yio_get_upload_path()
+        .
+        'original-img/';
+
 }
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Create Directory
+|--------------------------------------------------------------------------
+*/
+
+function yio_create_directory($path)
+{
+
+    if (!file_exists($path)) {
+
+        wp_mkdir_p($path);
+
+    }
+
+
+    return $path;
+
+}
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -59,33 +133,48 @@ function yio_original_dir()
 
 function yio_create_original_dir()
 {
-    $dir = yio_original_dir();
 
-    if (!file_exists($dir)) {
-        wp_mkdir_p($dir);
-    }
+    return yio_create_directory(
+        yio_original_dir()
+    );
 
-    return $dir;
 }
+
+
 
 /*
 |--------------------------------------------------------------------------
-| Current Output Format
+| Output Extension
 |--------------------------------------------------------------------------
 */
 
 function yio_output_extension()
 {
+
     $format = strtolower(
-        yio_get_option('output_format', 'webp')
+        yio_get_option(
+            'output_format',
+            'webp'
+        )
     );
 
-    if ($format == 'avif' && yio_supports_avif()) {
+
+    if (
+        $format === 'avif'
+        &&
+        yio_supports_avif()
+    ) {
+
         return 'avif';
+
     }
 
+
     return 'webp';
+
 }
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -95,22 +184,50 @@ function yio_output_extension()
 
 function yio_supports_avif()
 {
-    if (!extension_loaded('imagick')) {
-        return false;
+
+    static $result = null;
+
+
+    if ($result !== null) {
+
+        return $result;
+
     }
+
+
+    $result = false;
+
+
+    if (!extension_loaded('imagick')) {
+
+        return false;
+
+    }
+
 
     try {
 
+
         $formats = Imagick::queryFormats('AVIF');
 
-        return !empty($formats);
+
+        $result = !empty($formats);
+
 
     } catch (Exception $e) {
 
-        return false;
+
+        $result = false;
+
 
     }
+
+
+    return $result;
+
 }
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -120,6 +237,7 @@ function yio_supports_avif()
 
 function yio_supported_extensions()
 {
+
     return [
 
         'jpg',
@@ -132,20 +250,44 @@ function yio_supported_extensions()
         'tiff'
 
     ];
+
 }
+
+
 
 /*
 |--------------------------------------------------------------------------
-| Is Image File
+| Check Image
 |--------------------------------------------------------------------------
 */
 
 function yio_is_supported_image($path)
 {
-    $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
 
-    return in_array($ext, yio_supported_extensions());
+    if (!file_exists($path)) {
+
+        return false;
+
+    }
+
+
+    $ext = strtolower(
+        pathinfo(
+            $path,
+            PATHINFO_EXTENSION
+        )
+    );
+
+
+    return in_array(
+        $ext,
+        yio_supported_extensions(),
+        true
+    );
+
 }
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -155,67 +297,82 @@ function yio_is_supported_image($path)
 
 function yio_filesize($file)
 {
+
     if (!file_exists($file)) {
+
         return '-';
+
     }
 
-    return size_format(filesize($file), 2);
-}
 
-/*
-|--------------------------------------------------------------------------
-| Build Backup Path
-|--------------------------------------------------------------------------
-*/
-
-function yio_backup_path($absolute_file)
-{
-    $upload = wp_upload_dir();
-
-    $relative = str_replace(
-        trailingslashit($upload['basedir']),
-        '',
-        $absolute_file
+    return size_format(
+        filesize($file),
+        2
     );
 
-    return yio_original_dir() . $relative;
 }
+
+
 
 /*
 |--------------------------------------------------------------------------
-| Ensure Backup Folder Exists
+| Relative Upload Path
 |--------------------------------------------------------------------------
 */
 
-function yio_prepare_backup_folder($absolute_file)
+function yio_relative_upload_path($file)
 {
-    $backup = yio_backup_path($absolute_file);
 
-    $folder = dirname($backup);
+    return ltrim(
 
-    if (!file_exists($folder)) {
-        wp_mkdir_p($folder);
-    }
+        str_replace(
+            yio_get_upload_path(),
+            '',
+            $file
+        ),
+
+        '/'
+
+    );
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Backup Path
+|--------------------------------------------------------------------------
+*/
+
+function yio_backup_path($file)
+{
+
+    return yio_original_dir()
+        .
+        yio_relative_upload_path($file);
+
+}
+
+
+
+/*
+|--------------------------------------------------------------------------
+| Prepare Backup Destination
+|--------------------------------------------------------------------------
+*/
+
+function yio_prepare_backup_folder($file)
+{
+
+    $backup = yio_backup_path($file);
+
+
+    yio_create_directory(
+        dirname($backup)
+    );
+
 
     return $backup;
+
 }
-
-/*
-|--------------------------------------------------------------------------
-| Simple Logger
-|--------------------------------------------------------------------------
-*/
-
-function yio_log($message)
-{
-    if (!defined('WP_DEBUG')) {
-        return;
-    }
-
-    if (!WP_DEBUG) {
-        return;
-    }
-
-    error_log('[YIO] ' . $message);
-}
-
