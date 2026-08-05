@@ -8,3 +8,65 @@ Proceed to Stage 4: build includes/bulk.php to scan the entire attachment librar
 ################################
 ############ Answer ############
 ################################
+Stage 4: the bulk optimizer. This touches four files — a new `includes/bulk.php`, a re-entrancy guard in the pipeline (needed because bulk calls it directly), the re-wired init, and the Bulk tab UI. Planning first:
+
+Applying the pipeline guard and re-wiring the init:
+
+
+
+
+The pipeline guard applied. The main-file edit didn't match — let me check the exact content of the init block:
+
+The main file content looks identical — let me check the actual line endings to see why the match failed:
+
+The main file has CRLF line endings (the `0d 0a` check), which is why the LF-based match failed. The reliable fix is a full rewrite with the bulk init added:
+
+
+
+
+Main file re-wired. Now writing the bulk engine itself:
+
+
+
+
+Now the Bulk tab UI with the progress dashboard:
+
+
+
+
+Now validating — PHP lint across the project plus a JS syntax check on the extracted inline script (if node is available):
+
+The lint passed; my extraction just kept the `<script>` tags. Fixing the extraction and re-checking:
+
+All validation passes — PHP lint clean, JS syntax OK. Final step: code review of the Stage 4 changes:
+
+The review confirmed the implementation is sound, with two substantive fixes to apply: (1) the scan's `update_post_meta_cache => false` causes N+1 DB queries since each scanned row immediately needs its `_wp_attached_file` meta — priming the cache instead; (2) the 5-minute lock TTL equals the batch timeout, risking a stolen lock mid-batch on slow hosts — extending to 15 minutes. Plus the minor `paused` branch simplification:
+
+
+
+
+Fixes applied. Final validation pass and repo state check:
+
+Interesting — the earlier stage files no longer appear as modified (committed since my last check), and there's a `Freebuff-Logs/` directory I didn't create. Let me confirm the repo state without touching those files:
+
+The user's workflow has been committing each stage (including my pipeline-guard and init edits apparently already in HEAD), plus their own `Freebuff-Logs/` notes which I'll leave untouched. Let me just confirm my Stage 4 edits are actually on disk, then wrap up:
+
+All Stage 4 edits confirmed on disk. Marking the plan complete:
+
+Stage 4 is complete and fully validated. Here's the summary:
+
+## Stage 4 Complete ✅ — Bulk Optimizer
+
+**The engine (`includes/bulk.php`, new):**
+- **AJAX-driven batched processing** — `yio_bulk_start` scans the library, `yio_bulk_step` processes one batch per request (`bulk_batch_size`, default 20), `yio_bulk_status` reports progress, `yio_bulk_cancel` pauses. Every handler is protected by a nonce + `manage_options` capability check.
+- **All five settings honored**: `dry_run` (scans and logs only, nothing touched), `bulk_limit` (caps the queue), `include_webp` (excludes already-converted files from the scan), `bulk_batch_size` (per-request batch), and `background_processing` (WP-Cron continuation so a run survives closing the tab — the AJAX driver and cron serialize via an atomic lock with stale-steal recovery).
+- **Robustness**: the queue lives in a transient, state in an option, each image is wrapped in its own try/catch so one failure can't abort the run, and results are bucketed into optimized/skipped/failed with total bytes saved tracked for the summary.
+- **Correct DB handling**: bulk stores the pipeline's returned metadata via `wp_update_attachment_metadata()` (which the upload flow does automatically) — the same rollback-safe ordering from Stage 1 means the DB can never point at a deleted file.
+
+**Critical supporting fix (`image-processor.php`):** bulk calls `yio_optimize_single_image()` directly, bypassing the upload filter — and the pipeline's internal size-regeneration re-fires the metadata filter, which would otherwise re-run the entire pipeline once per image. Added a re-entrancy guard (wrapped in `try/finally` so it resets on every path) around the pipeline, which makes nested calls no-op.
+
+**The UI (`includes/admin/bulk.php`):** Start / Pause / Resume buttons, an animated progress bar, a live counter, a scrolling log of the last 30 results, and a done-summary showing bytes saved. It also shows the current image count in the library, and on page load it polls status — so if cron finished or continued a run in the background, the tab reattaches and shows the real state. Settings inputs now have IDs so the Start button persists the current form values (sanitized) before scanning.
+
+**Validation:** `php -l` passes on all files; the inline JS passed a `node --check` syntax check; code review confirmed the guard/finally correctness, the unchanged-detection logic (`$new_metadata === $metadata`), cron/AJAX convergence, and the nonce/cap security. Three review fixes applied: primed the meta cache in the scan (kills N+1 DB queries on large libraries), raised the lock TTL to 15 minutes (a slow batch can't have its lock stolen mid-run), and simplified the paused-state branch.
+
+The plugin now covers the full advertised feature set: automatic upload optimization, watermark, SEO uniqueness, backups — **and batch optimization of the entire existing media library with a live progress dashboard.**
