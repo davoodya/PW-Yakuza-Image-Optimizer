@@ -1,0 +1,10 @@
+﻿################################
+########### Question ###########
+################################
+Translate the plugin's admin UI into Farsi with full RTL support (the plugin author is Persian), using the settings tabs' existing text and proper text domain loading.
+
+
+
+################################
+############ Answer ############
+################################

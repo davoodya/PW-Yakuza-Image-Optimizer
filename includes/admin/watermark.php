@@ -18,7 +18,7 @@ function yio_tab_watermark()
 
     ?>
 
-    <h2>Image Watermark</h2>
+    <h2><?php echo esc_html__('Image Watermark', 'yakuza-image-optimizer'); ?></h2>
 
 
     <table class="form-table">
@@ -27,7 +27,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Enable Image Watermark
+                <?php echo esc_html__('Enable Image Watermark', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -45,7 +45,7 @@ function yio_tab_watermark()
                         ); ?>
                     >
 
-                    Enable image watermark
+                    <?php echo esc_html__('Enable image watermark', 'yakuza-image-optimizer'); ?>
 
                 </label>
 
@@ -59,7 +59,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Watermark Image ID
+                <?php echo esc_html__('Watermark Image ID', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -76,7 +76,7 @@ function yio_tab_watermark()
 
 
                 <p class="description">
-                    Enter WordPress Media Attachment ID.
+                    <?php echo esc_html__('Enter WordPress Media Attachment ID.', 'yakuza-image-optimizer'); ?>
                 </p>
 
 
@@ -90,7 +90,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Watermark Scale (%)
+                <?php echo esc_html__('Watermark Scale (%)', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -116,7 +116,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Watermark Opacity
+                <?php echo esc_html__('Watermark Opacity', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -142,7 +142,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Position
+                <?php echo esc_html__('Position', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -156,17 +156,17 @@ function yio_tab_watermark()
 
                     $positions = [
 
-                        'top-left'     => 'Top Left',
-                        'top-center'   => 'Top Center',
-                        'top-right'    => 'Top Right',
+                        'top-left'      => __('Top Left', 'yakuza-image-optimizer'),
+                        'top-center'    => __('Top Center', 'yakuza-image-optimizer'),
+                        'top-right'     => __('Top Right', 'yakuza-image-optimizer'),
 
-                        'center-left'  => 'Center Left',
-                        'center'       => 'Center',
-                        'center-right' => 'Center Right',
+                        'center-left'   => __('Center Left', 'yakuza-image-optimizer'),
+                        'center'        => __('Center', 'yakuza-image-optimizer'),
+                        'center-right'  => __('Center Right', 'yakuza-image-optimizer'),
 
-                        'bottom-left'  => 'Bottom Left',
-                        'bottom-center'=> 'Bottom Center',
-                        'bottom-right' => 'Bottom Right',
+                        'bottom-left'   => __('Bottom Left', 'yakuza-image-optimizer'),
+                        'bottom-center' => __('Bottom Center', 'yakuza-image-optimizer'),
+                        'bottom-right'  => __('Bottom Right', 'yakuza-image-optimizer'),
 
                     ];
 
@@ -205,7 +205,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Padding
+                <?php echo esc_html__('Padding', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -233,7 +233,7 @@ function yio_tab_watermark()
     <hr>
 
 
-    <h2>Text Watermark</h2>
+    <h2><?php echo esc_html__('Text Watermark', 'yakuza-image-optimizer'); ?></h2>
 
 
     <table class="form-table">
@@ -242,7 +242,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Enable Text Watermark
+                <?php echo esc_html__('Enable Text Watermark', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -260,7 +260,7 @@ function yio_tab_watermark()
                 >
 
 
-                Enable text watermark
+                <?php echo esc_html__('Enable text watermark', 'yakuza-image-optimizer'); ?>
 
 
             </td>
@@ -272,7 +272,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Text
+                <?php echo esc_html__('Text', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -299,7 +299,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Font Size
+                <?php echo esc_html__('Font Size', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -327,7 +327,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Text Color
+                <?php echo esc_html__('Text Color', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -354,7 +354,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Text Opacity
+                <?php echo esc_html__('Text Opacity', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -383,7 +383,7 @@ function yio_tab_watermark()
         <tr>
 
             <th scope="row">
-                Text Position
+                <?php echo esc_html__('Text Position', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -393,7 +393,7 @@ function yio_tab_watermark()
                 <select name="yio_settings[text_position]">
 
 
-                <?php foreach ($positions as $key=>$label): ?>
+                <?php foreach ($positions as $key => $label): ?>
 
 
                     <option

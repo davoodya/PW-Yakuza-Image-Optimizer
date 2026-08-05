@@ -1,0 +1,596 @@
+# Copyright (C) 2026 Davood Yahay
+# This file is distributed under the same license as the Yakuza Image Optimizer package.
+msgid ""
+msgstr ""
+"Project-Id-Version: Yakuza Image Optimizer 1.0.0\n"
+"Report-Msgid-Bugs-To: https://davoodya.ir\n"
+"POT-Creation-Date: 2026-08-06 12:00+0000\n"
+"PO-Revision-Date: 2026-08-06 12:00+0000\n"
+"Last-Translator: Davood Yahay <info@davoodya.ir>\n"
+"Language-Team: Persian <fa@wordpress.org>\n"
+"Language: fa_IR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: POEdit\n"
+
+#: yakuza-image-optimizer.php
+msgid "Yakuza Image Optimizer"
+msgstr "بهینه‌ساز تصویر یاکوزا"
+
+#: yakuza-image-optimizer.php
+msgid "PHP 8.1 or newer is required."
+msgstr "نسخه PHP 8.1 یا بالاتر الزامی است."
+
+#: yakuza-image-optimizer.php
+msgid "Imagick PHP Extension is required."
+msgstr "افزونه Imagick برای PHP الزامی است."
+
+#: includes/admin-page.php
+msgid "YIO Optimizer"
+msgstr "بهینه‌ساز تصویر"
+
+#: includes/admin-page.php
+msgid "General"
+msgstr "عمومی"
+
+#: includes/admin-page.php
+msgid "Watermark"
+msgstr "واترمارک"
+
+#: includes/admin-page.php
+msgid "SEO"
+msgstr "سئو"
+
+#: includes/admin-page.php
+msgid "Backup"
+msgstr "پشتیبان‌گیری"
+
+#: includes/admin-page.php
+msgid "Bulk Optimize"
+msgstr "بهینه‌سازی انبوه"
+
+#: includes/admin-page.php
+msgid "Logs"
+msgstr "گزارش‌ها"
+
+#: includes/admin-page.php
+msgid "Tools"
+msgstr "ابزارها"
+
+#: includes/admin-page.php
+msgid "Version:"
+msgstr "نسخه:"
+
+#: includes/admin-page.php
+msgid "Designed & Developed by"
+msgstr "طراحی و توسعه توسط"
+
+#: includes/admin-page.php
+msgid "Coming soon."
+msgstr "به‌زودی."
+
+#: includes/admin/general.php
+msgid "Enable Optimizer"
+msgstr "فعال‌سازی بهینه‌ساز"
+
+#: includes/admin/general.php
+msgid "Enable automatic image optimization"
+msgstr "فعال‌سازی بهینه‌سازی خودکار تصاویر"
+
+#: includes/admin/general.php
+msgid "Process New Uploads"
+msgstr "پردازش آپلودهای جدید"
+
+#: includes/admin/general.php
+msgid "Automatically optimize newly uploaded images"
+msgstr "بهینه‌سازی خودکار تصاویر تازه آپلودشده"
+
+#: includes/admin/general.php
+msgid "Backup Original Image"
+msgstr "پشتیبان‌گیری از تصویر اصلی"
+
+#: includes/admin/general.php
+msgid "Save original image before optimization"
+msgstr "ذخیره تصویر اصلی پیش از بهینه‌سازی"
+
+#: includes/admin/general.php
+msgid "Output Format"
+msgstr "فرمت خروجی"
+
+#: includes/admin/general.php
+msgid "WebP"
+msgstr "WebP"
+
+#: includes/admin/general.php
+msgid "AVIF (if supported)"
+msgstr "AVIF (در صورت پشتیبانی)"
+
+#: includes/admin/general.php
+msgid "AVIF will automatically fallback to WebP if server does not support it."
+msgstr "در صورت عدم پشتیبانی سرور، فرمت AVIF به‌صورت خودکار به WebP برمی‌گردد."
+
+#: includes/admin/general.php
+msgid "Image Quality"
+msgstr "کیفیت تصویر"
+
+#: includes/admin/general.php
+msgid "Recommended: 75-85"
+msgstr "پیشنهادی: ۷۵ تا ۸۵"
+
+#: includes/admin/watermark.php
+msgid "Image Watermark"
+msgstr "واترمارک تصویری"
+
+#: includes/admin/watermark.php
+msgid "Enable Image Watermark"
+msgstr "فعال‌سازی واترمارک تصویری"
+
+#: includes/admin/watermark.php
+msgid "Enable image watermark"
+msgstr "فعال‌سازی واترمارک تصویری"
+
+#: includes/admin/watermark.php
+msgid "Watermark Image ID"
+msgstr "شناسه تصویر واترمارک"
+
+#: includes/admin/watermark.php
+msgid "Enter WordPress Media Attachment ID."
+msgstr "شناسه پیوست رسانه وردپرس را وارد کنید."
+
+#: includes/admin/watermark.php
+msgid "Watermark Scale (%)"
+msgstr "مقیاس واترمارک (٪)"
+
+#: includes/admin/watermark.php
+msgid "Watermark Opacity"
+msgstr "شفافیت واترمارک"
+
+#: includes/admin/watermark.php
+msgid "Position"
+msgstr "موقعیت"
+
+#: includes/admin/watermark.php
+msgid "Top Left"
+msgstr "بالا چپ"
+
+#: includes/admin/watermark.php
+msgid "Top Center"
+msgstr "بالا وسط"
+
+#: includes/admin/watermark.php
+msgid "Top Right"
+msgstr "بالا راست"
+
+#: includes/admin/watermark.php
+msgid "Center Left"
+msgstr "وسط چپ"
+
+#: includes/admin/watermark.php
+msgid "Center"
+msgstr "مرکز"
+
+#: includes/admin/watermark.php
+msgid "Center Right"
+msgstr "وسط راست"
+
+#: includes/admin/watermark.php
+msgid "Bottom Left"
+msgstr "پایین چپ"
+
+#: includes/admin/watermark.php
+msgid "Bottom Center"
+msgstr "پایین وسط"
+
+#: includes/admin/watermark.php
+msgid "Bottom Right"
+msgstr "پایین راست"
+
+#: includes/admin/watermark.php
+msgid "Padding"
+msgstr "فاصله از لبه"
+
+#: includes/admin/watermark.php
+msgid "Text Watermark"
+msgstr "واترمارک متنی"
+
+#: includes/admin/watermark.php
+msgid "Enable Text Watermark"
+msgstr "فعال‌سازی واترمارک متنی"
+
+#: includes/admin/watermark.php
+msgid "Enable text watermark"
+msgstr "فعال‌سازی واترمارک متنی"
+
+#: includes/admin/watermark.php
+msgid "Text"
+msgstr "متن"
+
+#: includes/admin/watermark.php
+msgid "Font Size"
+msgstr "اندازه قلم"
+
+#: includes/admin/watermark.php
+msgid "Text Color"
+msgstr "رنگ متن"
+
+#: includes/admin/watermark.php
+msgid "Text Opacity"
+msgstr "شفافیت متن"
+
+#: includes/admin/watermark.php
+msgid "Text Position"
+msgstr "موقعیت متن"
+
+#: includes/admin/seo.php
+msgid "SEO Image Optimization"
+msgstr "بهینه‌سازی سئوی تصویر"
+
+#: includes/admin/seo.php
+msgid "Enable SEO Optimization"
+msgstr "فعال‌سازی بهینه‌سازی سئو"
+
+#: includes/admin/seo.php
+msgid "Enable image SEO optimization"
+msgstr "فعال‌سازی بهینه‌سازی سئوی تصویر"
+
+#: includes/admin/seo.php
+msgid "Remove Metadata"
+msgstr "حذف متادیتا"
+
+#: includes/admin/seo.php
+msgid "Remove EXIF / IPTC / XMP metadata"
+msgstr "حذف متادیتای EXIF / IPTC / XMP"
+
+#: includes/admin/seo.php
+msgid "Auto Orientation"
+msgstr "چرخش خودکار"
+
+#: includes/admin/seo.php
+msgid "Automatically fix mobile camera rotation"
+msgstr "اصلاح خودکار چرخش تصاویر دوربین موبایل"
+
+#: includes/admin/seo.php
+msgid "Image Uniqueness Optimization"
+msgstr "بهینه‌سازی یکتایی تصویر"
+
+#: includes/admin/seo.php
+msgid "Gaussian Noise"
+msgstr "نویز گاوسی"
+
+#: includes/admin/seo.php
+msgid "Apply small pixel noise variation"
+msgstr "اعمال تغییرات نویز پیکسلی کوچک"
+
+#: includes/admin/seo.php
+msgid "Noise Strength"
+msgstr "شدت نویز"
+
+#: includes/admin/seo.php
+msgid "Current default: 0.6%"
+msgstr "پیش‌فرض فعلی: ۰.۶٪"
+
+#: includes/admin/seo.php
+msgid "Brightness Variation"
+msgstr "تغییر روشنایی"
+
+#: includes/admin/seo.php
+msgid "%"
+msgstr "٪"
+
+#: includes/admin/seo.php
+msgid "Contrast Variation"
+msgstr "تغییر کنتراست"
+
+#: includes/admin/seo.php
+msgid "Color Variation"
+msgstr "تغییر رنگ"
+
+#: includes/admin/seo.php
+msgid "Smart Resize"
+msgstr "تغییر اندازه هوشمند"
+
+#: includes/admin/seo.php
+msgid "Enable Smart Resize"
+msgstr "فعال‌سازی تغییر اندازه هوشمند"
+
+#: includes/admin/seo.php
+msgid "Automatically resize large images"
+msgstr "تغییر اندازه خودکار تصاویر بزرگ"
+
+#: includes/admin/seo.php
+msgid "Maximum Width"
+msgstr "حداکثر عرض"
+
+#: includes/admin/seo.php
+msgid "px"
+msgstr "پیکسل"
+
+#: includes/admin/seo.php
+msgid "Images smaller than this value will not be resized."
+msgstr "تصاویر کوچک‌تر از این مقدار تغییر اندازه نمی‌دهند."
+
+#: includes/admin/bulk.php
+msgid "Bulk Image Optimization"
+msgstr "بهینه‌سازی انبوه تصاویر"
+
+#: includes/admin/bulk.php
+msgid "Background Processing"
+msgstr "پردازش پس‌زمینه"
+
+#: includes/admin/bulk.php
+msgid "Enable background processing"
+msgstr "فعال‌سازی پردازش پس‌زمینه"
+
+#: includes/admin/bulk.php
+msgid "Images will be processed in small batches to reduce server load. When enabled, batches continue via WP-Cron even if you leave this page."
+msgstr "تصاویر در دسته‌های کوچک برای کاهش بار سرور پردازش می‌شوند. با فعال‌سازی، حتی اگر این صفحه را ترک کنید، پردازش دسته‌ها از طریق WP-Cron ادامه می‌یابد."
+
+#: includes/admin/bulk.php
+msgid "Batch Size"
+msgstr "اندازه دسته"
+
+#: includes/admin/bulk.php
+msgid "images per batch"
+msgstr "تصویر در هر دسته"
+
+#: includes/admin/bulk.php
+msgid "Recommended: 10-30 for shared hosting."
+msgstr "پیشنهادی: ۱۰ تا ۳۰ برای هاست اشتراکی."
+
+#: includes/admin/bulk.php
+msgid "Optimization Mode"
+msgstr "حالت بهینه‌سازی"
+
+#: includes/admin/bulk.php
+msgid "Dry Run"
+msgstr "اجرای آزمایشی"
+
+#: includes/admin/bulk.php
+msgid "Only scan and report files without changing them."
+msgstr "فقط فایل‌ها را بدون تغییر اسکن و گزارش کن."
+
+#: includes/admin/bulk.php
+msgid "Recommended before first bulk optimization."
+msgstr "پیشنهاد می‌شود پیش از اولین بهینه‌سازی انبوه."
+
+#: includes/admin/bulk.php
+msgid "Processing Limit"
+msgstr "محدودیت پردازش"
+
+#: includes/admin/bulk.php
+msgid "0 = Process all images."
+msgstr "۰ = پردازش همه تصاویر."
+
+#: includes/admin/bulk.php
+msgid "Regenerate Options"
+msgstr "گزینه‌های بازتولید"
+
+#: includes/admin/bulk.php
+msgid "Include Existing WebP"
+msgstr "شامل WebPهای موجود"
+
+#: includes/admin/bulk.php
+msgid "Re-optimize existing WebP files."
+msgstr "بهینه‌سازی مجدد فایل‌های WebP موجود."
+
+#: includes/admin/bulk.php
+msgid "Run Bulk Optimization"
+msgstr "اجرای بهینه‌سازی انبوه"
+
+#: includes/admin/bulk.php
+msgid "Scans the Media Library (%s images found) and applies the same pipeline as new uploads: backup, auto-orient, smart resize, watermark, SEO uniqueness and WebP/AVIF conversion."
+msgstr "کل کتابخانه رسانه (%s تصویر یافت شد) را اسکن می‌کند و همان خط لوله آپلودهای جدید را اعمال می‌کند: پشتیبان‌گیری، چرخش خودکار، تغییر اندازه هوشمند، واترمارک، یکتایی سئو و تبدیل به WebP/AVIF."
+
+#: includes/admin/bulk.php
+msgid "Start Bulk Optimization"
+msgstr "شروع بهینه‌سازی انبوه"
+
+#: includes/admin/bulk.php
+msgid "Pause"
+msgstr "توقف موقت"
+
+#: includes/admin/bulk.php
+msgid "Resume"
+msgstr "ادامه"
+
+#: includes/admin/backup.php
+msgid "Original Image Backup"
+msgstr "پشتیبان‌گیری از تصویر اصلی"
+
+#: includes/admin/backup.php
+msgid "Backup Original Images"
+msgstr "پشتیبان‌گیری از تصاویر اصلی"
+
+#: includes/admin/backup.php
+msgid "Keep original images before optimization"
+msgstr "نگهداری تصاویر اصلی پیش از بهینه‌سازی"
+
+#: includes/admin/backup.php
+msgid "Original files will be stored in:"
+msgstr "فایل‌های اصلی در این مسیر ذخیره می‌شوند:"
+
+#: includes/admin/backup.php
+msgid "Backup Structure"
+msgstr "ساختار پشتیبان‌گیری"
+
+#: includes/admin/backup.php
+msgid "Folder structure will match WordPress uploads."
+msgstr "ساختار پوشه‌ها مطابق آپلودهای وردپرس خواهد بود."
+
+#: includes/admin/backup.php
+msgid "Restore Options"
+msgstr "گزینه‌های بازیابی"
+
+#: includes/admin/backup.php
+msgid "Restore Method"
+msgstr "روش بازیابی"
+
+#: includes/admin/backup.php
+msgid "Replace optimized file"
+msgstr "جایگزینی فایل بهینه‌شده"
+
+#: includes/admin/backup.php
+msgid "Restore as new file"
+msgstr "بازیابی به‌عنوان فایل جدید"
+
+#: includes/admin/backup.php
+msgid "\"Replace\" swaps the optimized file back to the original. \"Restore as new file\" keeps the optimized image and adds the original as a new attachment."
+msgstr "«جایگزینی» فایل بهینه‌شده را با نسخه اصلی تعویض می‌کند. «بازیابی به‌عنوان فایل جدید» تصویر بهینه‌شده را نگه می‌دارد و نسخه اصلی را به‌عنوان پیوست جدید اضافه می‌کند."
+
+#: includes/admin/backup.php
+msgid "Image Comparison"
+msgstr "مقایسه تصاویر"
+
+#: includes/admin/backup.php
+msgid "Enable Comparison"
+msgstr "فعال‌سازی مقایسه"
+
+#: includes/admin/backup.php
+msgid "Enable before / after comparison"
+msgstr "فعال‌سازی مقایسه قبل / بعد"
+
+#: includes/admin/backup.php
+msgid "Restore Originals"
+msgstr "بازیابی نسخه‌های اصلی"
+
+#: includes/admin/backup.php
+msgid "Restores every optimized image from its backup in original-img/, using the restore method selected above. The upload pipeline is paused during the restore, so restored originals are not re-optimized automatically."
+msgstr "همه تصاویر بهینه‌شده را از پشتیبان آن‌ها در پوشه original-img بازیابی می‌کند و از روش بازیابی انتخاب‌شده در بالا استفاده می‌کند. در طول بازیابی، خط لوله آپلود متوقف می‌شود تا نسخه‌های اصلی بازیابی‌شده به‌صورت خودکار دوباره بهینه نشوند."
+
+#: includes/admin/backup.php
+msgid "Restore All Originals"
+msgstr "بازیابی همه نسخه‌های اصلی"
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "of"
+msgstr "از"
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "processed"
+msgstr "پردازش‌شده"
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "skipped"
+msgstr "نادیده‌گرفته‌شده"
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "failed"
+msgstr "ناموفق"
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "Starting..."
+msgstr "در حال شروع..."
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "Resuming..."
+msgstr "در حال ادامه..."
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "ERROR:"
+msgstr "خطا:"
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "Paused. The queue is preserved — you can resume anytime."
+msgstr "متوقف شد. صف پردازش حفظ شده است — هر زمان می‌توانید ادامه دهید."
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "Done."
+msgstr "انجام شد."
+
+#: includes/admin/backup.php includes/admin/bulk.php
+msgid "Ready."
+msgstr "آماده."
+
+#: includes/admin/backup.php
+msgid "restored"
+msgstr "بازیابی‌شده"
+
+#: includes/admin/bulk.php
+msgid "optimized"
+msgstr "بهینه‌شده"
+
+#: includes/admin/bulk.php
+msgid "(DRY RUN — no files are changed)"
+msgstr "(اجرای آزمایشی — هیچ فایلی تغییر نمی‌کند)"
+
+#: includes/admin/bulk.php
+msgid "Total saved:"
+msgstr "مجموع ذخیره‌شده:"
+
+#: includes/bulk.php includes/restore.php
+msgid "Insufficient permissions."
+msgstr "دسترسی کافی نیست."
+
+#: includes/bulk.php
+msgid "The optimizer is disabled. Enable it in the General settings first."
+msgstr "بهینه‌ساز غیرفعال است. ابتدا آن را در تنظیمات عمومی فعال کنید."
+
+#: includes/bulk.php
+msgid "No images found to optimize."
+msgstr "تصویری برای بهینه‌سازی یافت نشد."
+
+#: includes/bulk.php
+msgid "#%1$d: file missing on disk"
+msgstr "#%1$d: فایل روی دیسک وجود ندارد"
+
+#: includes/bulk.php
+msgid "#%1$d: animated GIF skipped"
+msgstr "#%1$d: GIF متحرک نادیده گرفته شد"
+
+#: includes/bulk.php
+msgid "#%1$d: already %2$s"
+msgstr "#%1$d: از قبل %2$s است"
+
+#: includes/bulk.php
+msgid "#%1$d: no image metadata"
+msgstr "#%1$d: متادیتای تصویر وجود ندارد"
+
+#: includes/bulk.php
+msgid "#%1$d: [dry run] would optimize %2$s"
+msgstr "#%1$d: [اجرای آزمایشی] %2$s بهینه خواهد شد"
+
+#: includes/bulk.php
+msgid "#%1$d: unchanged (%2$s)"
+msgstr "#%1$d: بدون تغییر (%2$s)"
+
+#: includes/bulk.php
+msgid "#%1$d: optimized %2$s"
+msgstr "#%1$d: %2$s بهینه شد"
+
+#: includes/bulk.php includes/restore.php
+msgid "#%1$d: error — %2$s"
+msgstr "#%1$d: خطا — %2$s"
+
+#: includes/restore.php
+msgid "No images with backups found to restore."
+msgstr "تصویری با پشتیبان برای بازیابی یافت نشد."
+
+#: includes/restore.php
+msgid "#%1$d: no attached file"
+msgstr "#%1$d: فایل پیوستی وجود ندارد"
+
+#: includes/restore.php
+msgid "#%1$d: no backup found"
+msgstr "#%1$d: پشتیبان یافت نشد"
+
+#: includes/restore.php
+msgid "#%1$d: could not copy backup"
+msgstr "#%1$d: کپی پشتیبان ممکن نشد"
+
+#: includes/restore.php
+msgid "Metadata regeneration failed."
+msgstr "بازتولید متادیتا ناموفق بود."
+
+#: includes/restore.php
+msgid "#%1$d: restored %2$s"
+msgstr "#%1$d: %2$s بازیابی شد"
+
+#: includes/restore.php
+msgid "#%1$d: could not create attachment"
+msgstr "#%1$d: ایجاد پیوست ممکن نشد"
+
+#: includes/restore.php
+msgid "#%1$d: restored as new attachment #%2$d"
+msgstr "#%1$d: به‌عنوان پیوست جدید #%2$d بازیابی شد"

@@ -16,9 +16,24 @@ function yio_tab_backup()
 
     $settings = yio_get_options();
 
+    $yio_i18n = [
+
+        'of'        => __('of', 'yakuza-image-optimizer'),
+        'processed' => __('processed', 'yakuza-image-optimizer'),
+        'restored'  => __('restored', 'yakuza-image-optimizer'),
+        'skipped'   => __('skipped', 'yakuza-image-optimizer'),
+        'failed'    => __('failed', 'yakuza-image-optimizer'),
+        'starting'  => __('Starting...', 'yakuza-image-optimizer'),
+        'resuming'  => __('Resuming...', 'yakuza-image-optimizer'),
+        'error'     => __('ERROR:', 'yakuza-image-optimizer'),
+        'paused'    => __('Paused. The queue is preserved — you can resume anytime.', 'yakuza-image-optimizer'),
+        'done'      => __('Done.', 'yakuza-image-optimizer'),
+
+    ];
+
     ?>
 
-    <h2>Original Image Backup</h2>
+    <h2><?php echo esc_html__('Original Image Backup', 'yakuza-image-optimizer'); ?></h2>
 
 
     <table class="form-table">
@@ -27,7 +42,7 @@ function yio_tab_backup()
         <tr>
 
             <th scope="row">
-                Backup Original Images
+                <?php echo esc_html__('Backup Original Images', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -47,12 +62,12 @@ function yio_tab_backup()
                 >
 
 
-                Keep original images before optimization
+                <?php echo esc_html__('Keep original images before optimization', 'yakuza-image-optimizer'); ?>
 
 
                 <p class="description">
 
-                    Original files will be stored in:
+                    <?php echo esc_html__('Original files will be stored in:', 'yakuza-image-optimizer'); ?>
                     <br>
 
                     wp-content/uploads/original-img/
@@ -70,7 +85,7 @@ function yio_tab_backup()
         <tr>
 
             <th scope="row">
-                Backup Structure
+                <?php echo esc_html__('Backup Structure', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -84,7 +99,7 @@ function yio_tab_backup()
 
                 <p class="description">
 
-                    Folder structure will match WordPress uploads.
+                    <?php echo esc_html__('Folder structure will match WordPress uploads.', 'yakuza-image-optimizer'); ?>
 
                 </p>
 
@@ -104,7 +119,7 @@ function yio_tab_backup()
 
 
 
-    <h2>Restore Options</h2>
+    <h2><?php echo esc_html__('Restore Options', 'yakuza-image-optimizer'); ?></h2>
 
 
 
@@ -114,7 +129,7 @@ function yio_tab_backup()
         <tr>
 
             <th scope="row">
-                Restore Method
+                <?php echo esc_html__('Restore Method', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -135,7 +150,7 @@ function yio_tab_backup()
                         ); ?>
                     >
 
-                        Replace optimized file
+                        <?php echo esc_html__('Replace optimized file', 'yakuza-image-optimizer'); ?>
 
                     </option>
 
@@ -149,7 +164,7 @@ function yio_tab_backup()
                         ); ?>
                     >
 
-                        Restore as new file
+                        <?php echo esc_html__('Restore as new file', 'yakuza-image-optimizer'); ?>
 
                     </option>
 
@@ -158,9 +173,7 @@ function yio_tab_backup()
 
                 <p class="description">
 
-                    "Replace" swaps the optimized file back to the original.
-                    "Restore as new file" keeps the optimized image and adds the
-                    original as a new attachment.
+                    <?php echo esc_html__('"Replace" swaps the optimized file back to the original. "Restore as new file" keeps the optimized image and adds the original as a new attachment.', 'yakuza-image-optimizer'); ?>
 
                 </p>
 
@@ -180,7 +193,7 @@ function yio_tab_backup()
 
 
 
-    <h2>Image Comparison</h2>
+    <h2><?php echo esc_html__('Image Comparison', 'yakuza-image-optimizer'); ?></h2>
 
 
 
@@ -190,7 +203,7 @@ function yio_tab_backup()
         <tr>
 
             <th scope="row">
-                Enable Comparison
+                <?php echo esc_html__('Enable Comparison', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -210,7 +223,7 @@ function yio_tab_backup()
                 >
 
 
-                Enable before / after comparison
+                <?php echo esc_html__('Enable before / after comparison', 'yakuza-image-optimizer'); ?>
 
 
             </td>
@@ -226,26 +239,23 @@ function yio_tab_backup()
     <hr>
 
 
-    <h2>Restore Originals</h2>
+    <h2><?php echo esc_html__('Restore Originals', 'yakuza-image-optimizer'); ?></h2>
 
     <p class="description">
-        Restores every optimized image from its backup in
-        <code>original-img/</code>, using the restore method selected above.
-        The upload pipeline is paused during the restore, so restored
-        originals are not re-optimized automatically.
+        <?php echo esc_html__('Restores every optimized image from its backup in original-img/, using the restore method selected above. The upload pipeline is paused during the restore, so restored originals are not re-optimized automatically.', 'yakuza-image-optimizer'); ?>
     </p>
 
     <p>
         <button type="button" id="yio-restore-start" class="button button-primary button-hero">
-            Restore All Originals
+            <?php echo esc_html__('Restore All Originals', 'yakuza-image-optimizer'); ?>
         </button>
 
         <button type="button" id="yio-restore-pause" class="button" style="display:none;">
-            Pause
+            <?php echo esc_html__('Pause', 'yakuza-image-optimizer'); ?>
         </button>
 
         <button type="button" id="yio-restore-resume" class="button button-primary" style="display:none;">
-            Resume
+            <?php echo esc_html__('Resume', 'yakuza-image-optimizer'); ?>
         </button>
     </p>
 
@@ -255,7 +265,7 @@ function yio_tab_backup()
             <div id="yio-restore-progress-bar" class="yio-bulk-progress-bar" style="width:0%"></div>
         </div>
 
-        <p id="yio-restore-counter" class="description">Ready.</p>
+        <p id="yio-restore-counter" class="description"><?php echo esc_html__('Ready.', 'yakuza-image-optimizer'); ?></p>
 
     </div>
 
@@ -298,6 +308,13 @@ function yio_tab_backup()
             max-width: 600px;
             margin: 10px 0;
         }
+        [dir="rtl"] .yio-bulk-progress {
+            direction: rtl;
+        }
+        [dir="rtl"] .yio-bulk-log {
+            direction: rtl;
+            text-align: right;
+        }
     </style>
 
     <script>
@@ -309,6 +326,8 @@ function yio_tab_backup()
             nonce:   <?php echo wp_json_encode(wp_create_nonce('yio_restore')); ?>,
             running: false
         };
+
+        var i18n = <?php echo wp_json_encode($yio_i18n); ?>;
 
         function post(action, data, cb) {
             $.post(yioRestore.url, $.extend({ action: action, nonce: yioRestore.nonce }, data), cb);
@@ -326,10 +345,10 @@ function yio_tab_backup()
             $('#yio-restore-progress-bar').css('width', pct + '%');
 
             $('#yio-restore-counter').text(
-                progress.processed + ' of ' + progress.total + ' processed — ' +
-                'restored ' + progress.restored + ', ' +
-                'skipped ' + progress.skipped + ', ' +
-                'failed ' + progress.failed
+                progress.processed + ' ' + i18n.of + ' ' + progress.total + ' ' + i18n.processed + ' — ' +
+                i18n.restored + ' ' + progress.restored + '، ' +
+                i18n.skipped + ' ' + progress.skipped + '، ' +
+                i18n.failed + ' ' + progress.failed
             );
 
             $('#yio-restore-log').empty();
@@ -349,8 +368,10 @@ function yio_tab_backup()
 
         function showSummary(progress) {
             $('#yio-restore-summary').show().html(
-                '<strong>Done.</strong> Restored ' + progress.restored + ', ' +
-                'skipped ' + progress.skipped + ', failed ' + progress.failed + '.'
+                '<strong>' + i18n.done + '</strong> ' +
+                i18n.restored + ' ' + progress.restored + '، ' +
+                i18n.skipped + ' ' + progress.skipped + '، ' +
+                i18n.failed + ' ' + progress.failed + '.'
             );
         }
 
@@ -360,7 +381,7 @@ function yio_tab_backup()
             post('yio_restore_step', {}, function (res) {
                 if (!res.success) {
                     yioRestore.running = false;
-                    logLine('ERROR: ' + res.data);
+                    logLine(i18n.error + ' ' + res.data);
                     setMode('idle');
                     return;
                 }
@@ -384,14 +405,14 @@ function yio_tab_backup()
             var $btn = $('#yio-restore-start');
             yioRestore.running = true;
             $btn.prop('disabled', true);
-            logLine('Starting...');
+            logLine(i18n.starting);
 
             post('yio_restore_start', { settings: { restore_method: $('#yio-settings-restore-method').val() } }, function (res) {
                 $btn.prop('disabled', false);
 
                 if (!res.success) {
                     yioRestore.running = false;
-                    logLine('ERROR: ' + res.data);
+                    logLine(i18n.error + ' ' + res.data);
                     setMode('idle');
                     return;
                 }
@@ -416,12 +437,12 @@ function yio_tab_backup()
                 if (yioRestore.running) { return; }
 
                 yioRestore.running = true;
-                logLine('Resuming...');
+                logLine(i18n.resuming);
 
                 post('yio_restore_start', { settings: { restore_method: $('#yio-settings-restore-method').val() } }, function (res) {
                     if (!res.success) {
                         yioRestore.running = false;
-                        logLine('ERROR: ' + res.data);
+                        logLine(i18n.error + ' ' + res.data);
                         return;
                     }
 
@@ -443,7 +464,7 @@ function yio_tab_backup()
                     if (res.success) {
                         yioRestore.running = false;
                         setMode(res.data.status);
-                        logLine('Paused. The queue is preserved — you can resume anytime.');
+                        logLine(i18n.paused);
                     }
                 });
             });

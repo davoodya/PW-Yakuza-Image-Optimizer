@@ -46,8 +46,8 @@ function yio_check_requirements()
 
         add_action('admin_notices', function () {
 
-            echo '<div class="notice notice-error"><p><strong>Yakuza Image Optimizer</strong><br>';
-            echo 'PHP 8.1 or newer is required.</p></div>';
+            echo '<div class="notice notice-error"><p><strong>' . esc_html__('Yakuza Image Optimizer', 'yakuza-image-optimizer') . '</strong><br>';
+            echo esc_html__('PHP 8.1 or newer is required.', 'yakuza-image-optimizer') . '</p></div>';
 
         });
 
@@ -58,8 +58,8 @@ function yio_check_requirements()
 
         add_action('admin_notices', function () {
 
-            echo '<div class="notice notice-error"><p><strong>Yakuza Image Optimizer</strong><br>';
-            echo 'Imagick PHP Extension is required.</p></div>';
+            echo '<div class="notice notice-error"><p><strong>' . esc_html__('Yakuza Image Optimizer', 'yakuza-image-optimizer') . '</strong><br>';
+            echo esc_html__('Imagick PHP Extension is required.', 'yakuza-image-optimizer') . '</p></div>';
 
         });
 
@@ -146,10 +146,6 @@ add_action('plugins_loaded', function () {
         yio_settings_init();
     }
 
-    if (function_exists('yio_admin_menu')) {
-        yio_admin_menu();
-    }
-
     if (function_exists('yio_image_processor_init')) {
         yio_image_processor_init();
     }
@@ -161,5 +157,31 @@ add_action('plugins_loaded', function () {
     if (function_exists('yio_restore_init')) {
         yio_restore_init();
     }
+
+});
+
+// Registered on admin_menu (after init) so the menu labels are evaluated
+// once the text domain is loaded.
+add_action('admin_menu', function () {
+
+    if (function_exists('yio_admin_menu')) {
+        yio_admin_menu();
+    }
+
+});
+
+/*
+|--------------------------------------------------------------------------
+| Text Domain
+|--------------------------------------------------------------------------
+*/
+
+add_action('init', function () {
+
+    load_plugin_textdomain(
+        'yakuza-image-optimizer',
+        false,
+        dirname(plugin_basename(YIO_PLUGIN_FILE)) . '/languages/'
+    );
 
 });

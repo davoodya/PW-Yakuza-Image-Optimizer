@@ -1,3 +1,6 @@
 ﻿1. Add AJAX Version of Plugin
-2. Add Farsi Translate of Plugin
-3. Watermark Selection using Media Library(no with ID)
+2. Add Farsi Translate of Plugin (DONE)
+Wordpress Admin => YIO Optimizer => Watermark Tab
+	1. Watermark Selection using Media Library(no with ID)
+	2. Color Selection for Text
+	

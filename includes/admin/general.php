@@ -22,7 +22,7 @@ function yio_tab_general()
         <tr>
 
             <th scope="row">
-                Enable Optimizer
+                <?php echo esc_html__('Enable Optimizer', 'yakuza-image-optimizer'); ?>
             </th>
 
             <td>
@@ -39,7 +39,7 @@ function yio_tab_general()
                         ); ?>
                     >
 
-                    Enable automatic image optimization
+                    <?php echo esc_html__('Enable automatic image optimization', 'yakuza-image-optimizer'); ?>
 
                 </label>
 
@@ -51,7 +51,7 @@ function yio_tab_general()
         <tr>
 
             <th scope="row">
-                Process New Uploads
+                <?php echo esc_html__('Process New Uploads', 'yakuza-image-optimizer'); ?>
             </th>
 
             <td>
@@ -68,7 +68,7 @@ function yio_tab_general()
                         ); ?>
                     >
 
-                    Automatically optimize newly uploaded images
+                    <?php echo esc_html__('Automatically optimize newly uploaded images', 'yakuza-image-optimizer'); ?>
 
                 </label>
 
@@ -80,7 +80,7 @@ function yio_tab_general()
         <tr>
 
             <th scope="row">
-                Backup Original Image
+                <?php echo esc_html__('Backup Original Image', 'yakuza-image-optimizer'); ?>
             </th>
 
             <td>
@@ -97,7 +97,7 @@ function yio_tab_general()
                         ); ?>
                     >
 
-                    Save original image before optimization
+                    <?php echo esc_html__('Save original image before optimization', 'yakuza-image-optimizer'); ?>
 
                 </label>
 
@@ -110,7 +110,7 @@ function yio_tab_general()
         <tr>
 
             <th scope="row">
-                Output Format
+                <?php echo esc_html__('Output Format', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -126,7 +126,7 @@ function yio_tab_general()
                         'webp'
                     ); ?>
                     >
-                        WebP
+                        <?php echo esc_html__('WebP', 'yakuza-image-optimizer'); ?>
                     </option>
 
 
@@ -137,7 +137,7 @@ function yio_tab_general()
                         'avif'
                     ); ?>
                     >
-                        AVIF (if supported)
+                        <?php echo esc_html__('AVIF (if supported)', 'yakuza-image-optimizer'); ?>
                     </option>
 
 
@@ -146,7 +146,7 @@ function yio_tab_general()
 
                 <p class="description">
 
-                    AVIF will automatically fallback to WebP if server does not support it.
+                    <?php echo esc_html__('AVIF will automatically fallback to WebP if server does not support it.', 'yakuza-image-optimizer'); ?>
 
                 </p>
 
@@ -160,7 +160,7 @@ function yio_tab_general()
         <tr>
 
             <th scope="row">
-                Image Quality
+                <?php echo esc_html__('Image Quality', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -177,7 +177,7 @@ function yio_tab_general()
                 >
 
                 <p class="description">
-                    Recommended: 75-85
+                    <?php echo esc_html__('Recommended: 75-85', 'yakuza-image-optimizer'); ?>
                 </p>
 
             </td>

@@ -32,7 +32,7 @@ function yio_restore_ajax_start()
     check_ajax_referer('yio_restore', 'nonce');
 
     if (!current_user_can('manage_options')) {
-        wp_send_json_error('Insufficient permissions.');
+        wp_send_json_error(__('Insufficient permissions.', 'yakuza-image-optimizer'));
     }
 
     // The run UI sits inside the settings form, so persist the current
@@ -78,7 +78,7 @@ function yio_restore_ajax_start()
             'restored'  => 0,
             'skipped'   => 0,
             'failed'    => 0,
-            'log'       => array('No images with backups found to restore.'),
+            'log'       => array(__('No images with backups found to restore.', 'yakuza-image-optimizer')),
         ));
     }
 
@@ -111,7 +111,7 @@ function yio_restore_ajax_step()
     check_ajax_referer('yio_restore', 'nonce');
 
     if (!current_user_can('manage_options')) {
-        wp_send_json_error('Insufficient permissions.');
+        wp_send_json_error(__('Insufficient permissions.', 'yakuza-image-optimizer'));
     }
 
     wp_send_json_success(yio_restore_process_batch());
@@ -122,7 +122,7 @@ function yio_restore_ajax_status()
     check_ajax_referer('yio_restore', 'nonce');
 
     if (!current_user_can('manage_options')) {
-        wp_send_json_error('Insufficient permissions.');
+        wp_send_json_error(__('Insufficient permissions.', 'yakuza-image-optimizer'));
     }
 
     wp_send_json_success(yio_restore_progress());
@@ -133,7 +133,7 @@ function yio_restore_ajax_cancel()
     check_ajax_referer('yio_restore', 'nonce');
 
     if (!current_user_can('manage_options')) {
-        wp_send_json_error('Insufficient permissions.');
+        wp_send_json_error(__('Insufficient permissions.', 'yakuza-image-optimizer'));
     }
 
     $state = yio_restore_state();
@@ -271,13 +271,19 @@ function yio_restore_attachment($attachment_id)
     $current = get_attached_file($attachment_id);
 
     if (!$current || !file_exists($current)) {
-        return array('bucket' => 'failed', 'message' => '#' . $attachment_id . ': no attached file');
+        return array('bucket' => 'failed', 'message' => sprintf(
+            __('#%1$d: no attached file', 'yakuza-image-optimizer'),
+            $attachment_id
+        ));
     }
 
     $backup = yio_find_backup_for($current);
 
     if (!$backup) {
-        return array('bucket' => 'skipped', 'message' => '#' . $attachment_id . ': no backup found');
+        return array('bucket' => 'skipped', 'message' => sprintf(
+            __('#%1$d: no backup found', 'yakuza-image-optimizer'),
+            $attachment_id
+        ));
     }
 
     try {
@@ -292,7 +298,11 @@ function yio_restore_attachment($attachment_id)
 
         yio_log('Restore error on #' . $attachment_id . ': ' . $e->getMessage());
 
-        return array('bucket' => 'failed', 'message' => '#' . $attachment_id . ': error — ' . $e->getMessage());
+        return array('bucket' => 'failed', 'message' => sprintf(
+            __('#%1$d: error — %2$s', 'yakuza-image-optimizer'),
+            $attachment_id,
+            $e->getMessage()
+        ));
     }
 }
 
@@ -380,7 +390,10 @@ function yio_restore_in_place($backup, $current, $attachment_id)
 
             yio_log('Restore copy failed: ' . $backup . ' -> ' . $restored);
 
-            return array('bucket' => 'failed', 'message' => '#' . $attachment_id . ': could not copy backup');
+            return array('bucket' => 'failed', 'message' => sprintf(
+                __('#%1$d: could not copy backup', 'yakuza-image-optimizer'),
+                $attachment_id
+            ));
         }
     }
 
@@ -396,7 +409,7 @@ function yio_restore_in_place($backup, $current, $attachment_id)
         $new_metadata = wp_generate_attachment_metadata($attachment_id, $restored);
 
         if (!is_array($new_metadata)) {
-            throw new RuntimeException('Metadata regeneration failed.');
+            throw new RuntimeException(__('Metadata regeneration failed.', 'yakuza-image-optimizer'));
         }
 
         // Remove the optimized size variants and the optimized file.
@@ -468,7 +481,11 @@ function yio_restore_in_place($backup, $current, $attachment_id)
     // The original is live again, so its backup is no longer needed.
     @unlink($backup);
 
-    return array('bucket' => 'restored', 'message' => '#' . $attachment_id . ': restored ' . basename($restored));
+    return array('bucket' => 'restored', 'message' => sprintf(
+        __('#%1$d: restored %2$s', 'yakuza-image-optimizer'),
+        $attachment_id,
+        basename($restored)
+    ));
 }
 
 /**
@@ -496,7 +513,10 @@ function yio_restore_as_new($backup, $original_id)
 
         yio_log('Restore copy failed: ' . $backup . ' -> ' . $new_path);
 
-        return array('bucket' => 'failed', 'message' => '#' . $original_id . ': could not copy backup');
+        return array('bucket' => 'failed', 'message' => sprintf(
+            __('#%1$d: could not copy backup', 'yakuza-image-optimizer'),
+            $original_id
+        ));
     }
 
     $original = get_post($original_id);
@@ -515,7 +535,10 @@ function yio_restore_as_new($backup, $original_id)
 
         @unlink($new_path);
 
-        return array('bucket' => 'failed', 'message' => '#' . $original_id . ': could not create attachment');
+        return array('bucket' => 'failed', 'message' => sprintf(
+            __('#%1$d: could not create attachment', 'yakuza-image-optimizer'),
+            $original_id
+        ));
     }
 
     // Carry over the alt text.
@@ -543,7 +566,11 @@ function yio_restore_as_new($backup, $original_id)
         yio_restore_active(false);
     }
 
-    return array('bucket' => 'restored', 'message' => '#' . $original_id . ': restored as new attachment #' . $attachment_id);
+    return array('bucket' => 'restored', 'message' => sprintf(
+        __('#%1$d: restored as new attachment #%2$d', 'yakuza-image-optimizer'),
+        $original_id,
+        $attachment_id
+    ));
 }
 
 /*

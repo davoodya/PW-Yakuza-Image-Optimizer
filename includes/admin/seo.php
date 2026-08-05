@@ -18,7 +18,7 @@ function yio_tab_seo()
 
     ?>
 
-    <h2>SEO Image Optimization</h2>
+    <h2><?php echo esc_html__('SEO Image Optimization', 'yakuza-image-optimizer'); ?></h2>
 
     <table class="form-table">
 
@@ -26,7 +26,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Enable SEO Optimization
+                <?php echo esc_html__('Enable SEO Optimization', 'yakuza-image-optimizer'); ?>
             </th>
 
             <td>
@@ -41,7 +41,7 @@ function yio_tab_seo()
                     ); ?>
                 >
 
-                Enable image SEO optimization
+                <?php echo esc_html__('Enable image SEO optimization', 'yakuza-image-optimizer'); ?>
 
             </td>
 
@@ -52,7 +52,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Remove Metadata
+                <?php echo esc_html__('Remove Metadata', 'yakuza-image-optimizer'); ?>
             </th>
 
             <td>
@@ -67,7 +67,7 @@ function yio_tab_seo()
                     ); ?>
                 >
 
-                Remove EXIF / IPTC / XMP metadata
+                <?php echo esc_html__('Remove EXIF / IPTC / XMP metadata', 'yakuza-image-optimizer'); ?>
 
             </td>
 
@@ -78,7 +78,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Auto Orientation
+                <?php echo esc_html__('Auto Orientation', 'yakuza-image-optimizer'); ?>
             </th>
 
             <td>
@@ -93,7 +93,7 @@ function yio_tab_seo()
                     ); ?>
                 >
 
-                Automatically fix mobile camera rotation
+                <?php echo esc_html__('Automatically fix mobile camera rotation', 'yakuza-image-optimizer'); ?>
 
             </td>
 
@@ -107,7 +107,7 @@ function yio_tab_seo()
     <hr>
 
 
-    <h2>Image Uniqueness Optimization</h2>
+    <h2><?php echo esc_html__('Image Uniqueness Optimization', 'yakuza-image-optimizer'); ?></h2>
 
 
     <table class="form-table">
@@ -116,7 +116,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Gaussian Noise
+                <?php echo esc_html__('Gaussian Noise', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -133,7 +133,7 @@ function yio_tab_seo()
                     ); ?>
                 >
 
-                Apply small pixel noise variation
+                <?php echo esc_html__('Apply small pixel noise variation', 'yakuza-image-optimizer'); ?>
 
 
             </td>
@@ -146,7 +146,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Noise Strength
+                <?php echo esc_html__('Noise Strength', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -164,7 +164,7 @@ function yio_tab_seo()
                 >
 
                 <p class="description">
-                    Current default: 0.6%
+                    <?php echo esc_html__('Current default: 0.6%', 'yakuza-image-optimizer'); ?>
                 </p>
 
             </td>
@@ -177,7 +177,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Brightness Variation
+                <?php echo esc_html__('Brightness Variation', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -194,7 +194,7 @@ function yio_tab_seo()
                     ); ?>"
                 >
 
-                %
+                <?php echo esc_html__('%', 'yakuza-image-optimizer'); ?>
 
             </td>
 
@@ -207,7 +207,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Contrast Variation
+                <?php echo esc_html__('Contrast Variation', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -224,7 +224,7 @@ function yio_tab_seo()
                     ); ?>"
                 >
 
-                %
+                <?php echo esc_html__('%', 'yakuza-image-optimizer'); ?>
 
             </td>
 
@@ -237,7 +237,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Color Variation
+                <?php echo esc_html__('Color Variation', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -254,7 +254,7 @@ function yio_tab_seo()
                     ); ?>"
                 >
 
-                %
+                <?php echo esc_html__('%', 'yakuza-image-optimizer'); ?>
 
             </td>
 
@@ -271,7 +271,7 @@ function yio_tab_seo()
 
 
 
-    <h2>Smart Resize</h2>
+    <h2><?php echo esc_html__('Smart Resize', 'yakuza-image-optimizer'); ?></h2>
 
 
 
@@ -281,7 +281,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Enable Smart Resize
+                <?php echo esc_html__('Enable Smart Resize', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -298,7 +298,7 @@ function yio_tab_seo()
                     ); ?>
                 >
 
-                Automatically resize large images
+                <?php echo esc_html__('Automatically resize large images', 'yakuza-image-optimizer'); ?>
 
 
             </td>
@@ -311,7 +311,7 @@ function yio_tab_seo()
         <tr>
 
             <th scope="row">
-                Maximum Width
+                <?php echo esc_html__('Maximum Width', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -328,12 +328,12 @@ function yio_tab_seo()
                     ); ?>"
                 >
 
-                px
+                <?php echo esc_html__('px', 'yakuza-image-optimizer'); ?>
 
 
                 <p class="description">
 
-                    Images smaller than this value will not be resized.
+                    <?php echo esc_html__('Images smaller than this value will not be resized.', 'yakuza-image-optimizer'); ?>
 
                 </p>
 

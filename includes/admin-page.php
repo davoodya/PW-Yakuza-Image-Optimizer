@@ -4,7 +4,6 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-
 /*
 |--------------------------------------------------------------------------
 | Admin Menu
@@ -15,8 +14,8 @@ function yio_admin_menu()
 {
 
     add_menu_page(
-        'Yakuza Image Optimizer',
-        'YIO Optimizer',
+        __('Yakuza Image Optimizer', 'yakuza-image-optimizer'),
+        __('YIO Optimizer', 'yakuza-image-optimizer'),
         'manage_options',
         'yakuza-image-optimizer',
         'yio_admin_page',
@@ -44,13 +43,13 @@ function yio_admin_page()
 
     $tabs = [
 
-        'general'    => 'General',
-        'watermark'  => 'Watermark',
-        'seo'        => 'SEO',
-        'backup'     => 'Backup',
-        'bulk'       => 'Bulk Optimize',
-        'logs'       => 'Logs',
-        'tools'      => 'Tools',
+        'general'   => __('General', 'yakuza-image-optimizer'),
+        'watermark' => __('Watermark', 'yakuza-image-optimizer'),
+        'seo'       => __('SEO', 'yakuza-image-optimizer'),
+        'backup'    => __('Backup', 'yakuza-image-optimizer'),
+        'bulk'      => __('Bulk Optimize', 'yakuza-image-optimizer'),
+        'logs'      => __('Logs', 'yakuza-image-optimizer'),
+        'tools'     => __('Tools', 'yakuza-image-optimizer'),
 
     ];
 
@@ -63,18 +62,18 @@ function yio_admin_page()
 
 
         <h1>
-            Yakuza Image Optimizer
+            <?php echo esc_html__('Yakuza Image Optimizer', 'yakuza-image-optimizer'); ?>
         </h1>
 
 
         <p>
 
-            Version:
+            <?php echo esc_html__('Version:', 'yakuza-image-optimizer'); ?>
             <?php echo esc_html(YIO_VERSION); ?>
 
             <br>
 
-            Designed & Developed by
+            <?php echo esc_html__('Designed & Developed by', 'yakuza-image-optimizer'); ?>
             <strong>Davood Yahay</strong>
 
             <br>
@@ -212,9 +211,9 @@ function yio_admin_page()
 function yio_tab_logs()
 {
 
-    echo '<h2>Logs</h2>';
+    echo '<h2>' . esc_html__('Logs', 'yakuza-image-optimizer') . '</h2>';
 
-    echo '<p>Coming soon.</p>';
+    echo '<p>' . esc_html__('Coming soon.', 'yakuza-image-optimizer') . '</p>';
 
 }
 
@@ -223,8 +222,8 @@ function yio_tab_logs()
 function yio_tab_tools()
 {
 
-    echo '<h2>Tools</h2>';
+    echo '<h2>' . esc_html__('Tools', 'yakuza-image-optimizer') . '</h2>';
 
-    echo '<p>Coming soon.</p>';
+    echo '<p>' . esc_html__('Coming soon.', 'yakuza-image-optimizer') . '</p>';
 
 }

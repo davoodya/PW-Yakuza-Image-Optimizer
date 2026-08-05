@@ -25,9 +25,26 @@ function yio_tab_bulk()
 
     $image_count = (int) $count_query->found_posts;
 
+    $yio_i18n = [
+
+        'of'           => __('of', 'yakuza-image-optimizer'),
+        'processed'    => __('processed', 'yakuza-image-optimizer'),
+        'optimized'    => __('optimized', 'yakuza-image-optimizer'),
+        'skipped'      => __('skipped', 'yakuza-image-optimizer'),
+        'failed'       => __('failed', 'yakuza-image-optimizer'),
+        'starting'     => __('Starting...', 'yakuza-image-optimizer'),
+        'resuming'     => __('Resuming...', 'yakuza-image-optimizer'),
+        'error'        => __('ERROR:', 'yakuza-image-optimizer'),
+        'paused'       => __('Paused. The queue is preserved — you can resume anytime.', 'yakuza-image-optimizer'),
+        'done'         => __('Done.', 'yakuza-image-optimizer'),
+        'dry_run_note' => __('(DRY RUN — no files are changed)', 'yakuza-image-optimizer'),
+        'total_saved'  => __('Total saved:', 'yakuza-image-optimizer'),
+
+    ];
+
     ?>
 
-    <h2>Bulk Image Optimization</h2>
+    <h2><?php echo esc_html__('Bulk Image Optimization', 'yakuza-image-optimizer'); ?></h2>
 
 
     <table class="form-table">
@@ -36,7 +53,7 @@ function yio_tab_bulk()
         <tr>
 
             <th scope="row">
-                Background Processing
+                <?php echo esc_html__('Background Processing', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -55,13 +72,12 @@ function yio_tab_bulk()
 
                 >
 
-                Enable background processing
+                <?php echo esc_html__('Enable background processing', 'yakuza-image-optimizer'); ?>
 
 
                 <p class="description">
 
-                    Images will be processed in small batches to reduce server load.
-                    When enabled, batches continue via WP-Cron even if you leave this page.
+                    <?php echo esc_html__('Images will be processed in small batches to reduce server load. When enabled, batches continue via WP-Cron even if you leave this page.', 'yakuza-image-optimizer'); ?>
 
                 </p>
 
@@ -75,7 +91,7 @@ function yio_tab_bulk()
         <tr>
 
             <th scope="row">
-                Batch Size
+                <?php echo esc_html__('Batch Size', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -94,12 +110,12 @@ function yio_tab_bulk()
                 >
 
 
-                images per batch
+                <?php echo esc_html__('images per batch', 'yakuza-image-optimizer'); ?>
 
 
                 <p class="description">
 
-                    Recommended: 10-30 for shared hosting.
+                    <?php echo esc_html__('Recommended: 10-30 for shared hosting.', 'yakuza-image-optimizer'); ?>
 
                 </p>
 
@@ -118,7 +134,7 @@ function yio_tab_bulk()
 
 
 
-    <h2>Optimization Mode</h2>
+    <h2><?php echo esc_html__('Optimization Mode', 'yakuza-image-optimizer'); ?></h2>
 
 
     <table class="form-table">
@@ -127,7 +143,7 @@ function yio_tab_bulk()
         <tr>
 
             <th scope="row">
-                Dry Run
+                <?php echo esc_html__('Dry Run', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -148,12 +164,12 @@ function yio_tab_bulk()
                 >
 
 
-                Only scan and report files without changing them.
+                <?php echo esc_html__('Only scan and report files without changing them.', 'yakuza-image-optimizer'); ?>
 
 
                 <p class="description">
 
-                    Recommended before first bulk optimization.
+                    <?php echo esc_html__('Recommended before first bulk optimization.', 'yakuza-image-optimizer'); ?>
 
                 </p>
 
@@ -167,7 +183,7 @@ function yio_tab_bulk()
         <tr>
 
             <th scope="row">
-                Processing Limit
+                <?php echo esc_html__('Processing Limit', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -188,7 +204,7 @@ function yio_tab_bulk()
 
                 <p class="description">
 
-                    0 = Process all images.
+                    <?php echo esc_html__('0 = Process all images.', 'yakuza-image-optimizer'); ?>
 
                 </p>
 
@@ -206,7 +222,7 @@ function yio_tab_bulk()
 
 
 
-    <h2>Regenerate Options</h2>
+    <h2><?php echo esc_html__('Regenerate Options', 'yakuza-image-optimizer'); ?></h2>
 
 
     <table class="form-table">
@@ -215,7 +231,7 @@ function yio_tab_bulk()
         <tr>
 
             <th scope="row">
-                Include Existing WebP
+                <?php echo esc_html__('Include Existing WebP', 'yakuza-image-optimizer'); ?>
             </th>
 
 
@@ -236,7 +252,7 @@ function yio_tab_bulk()
                 >
 
 
-                Re-optimize existing WebP files.
+                <?php echo esc_html__('Re-optimize existing WebP files.', 'yakuza-image-optimizer'); ?>
 
 
             </td>
@@ -250,25 +266,33 @@ function yio_tab_bulk()
     <hr>
 
 
-    <h2>Run Bulk Optimization</h2>
+    <h2><?php echo esc_html__('Run Bulk Optimization', 'yakuza-image-optimizer'); ?></h2>
 
     <p class="description">
-        Scans the Media Library (<?php echo esc_html($image_count); ?> images found) and applies the same
-        pipeline as new uploads: backup, auto-orient, smart resize, watermark, SEO uniqueness and
-        WebP/AVIF conversion.
+        <?php
+
+        echo esc_html(
+            sprintf(
+                /* translators: %s: number of images found in the library. */
+                __('Scans the Media Library (%s images found) and applies the same pipeline as new uploads: backup, auto-orient, smart resize, watermark, SEO uniqueness and WebP/AVIF conversion.', 'yakuza-image-optimizer'),
+                number_format_i18n($image_count)
+            )
+        );
+
+        ?>
     </p>
 
     <p>
         <button type="button" id="yio-bulk-start" class="button button-primary button-hero">
-            Start Bulk Optimization
+            <?php echo esc_html__('Start Bulk Optimization', 'yakuza-image-optimizer'); ?>
         </button>
 
         <button type="button" id="yio-bulk-pause" class="button" style="display:none;">
-            Pause
+            <?php echo esc_html__('Pause', 'yakuza-image-optimizer'); ?>
         </button>
 
         <button type="button" id="yio-bulk-resume" class="button button-primary" style="display:none;">
-            Resume
+            <?php echo esc_html__('Resume', 'yakuza-image-optimizer'); ?>
         </button>
     </p>
 
@@ -278,7 +302,7 @@ function yio_tab_bulk()
             <div id="yio-bulk-progress-bar" class="yio-bulk-progress-bar" style="width:0%"></div>
         </div>
 
-        <p id="yio-bulk-counter" class="description">Ready.</p>
+        <p id="yio-bulk-counter" class="description"><?php echo esc_html__('Ready.', 'yakuza-image-optimizer'); ?></p>
 
     </div>
 
@@ -321,6 +345,13 @@ function yio_tab_bulk()
             max-width: 600px;
             margin: 10px 0;
         }
+        [dir="rtl"] .yio-bulk-progress {
+            direction: rtl;
+        }
+        [dir="rtl"] .yio-bulk-log {
+            direction: rtl;
+            text-align: right;
+        }
     </style>
 
     <script>
@@ -332,6 +363,8 @@ function yio_tab_bulk()
             nonce:    <?php echo wp_json_encode(wp_create_nonce('yio_bulk')); ?>,
             running:  false
         };
+
+        var i18n = <?php echo wp_json_encode($yio_i18n); ?>;
 
         function settingsPayload() {
             return {
@@ -365,11 +398,11 @@ function yio_tab_bulk()
             $('#yio-bulk-progress-bar').css('width', pct + '%');
 
             $('#yio-bulk-counter').text(
-                progress.processed + ' of ' + progress.total + ' processed — ' +
-                'optimized ' + progress.optimized + ', ' +
-                'skipped ' + progress.skipped + ', ' +
-                'failed ' + progress.failed +
-                (progress.dry_run ? ' (DRY RUN — no files are changed)' : '')
+                progress.processed + ' ' + i18n.of + ' ' + progress.total + ' ' + i18n.processed + ' — ' +
+                i18n.optimized + ' ' + progress.optimized + '، ' +
+                i18n.skipped + ' ' + progress.skipped + '، ' +
+                i18n.failed + ' ' + progress.failed +
+                (progress.dry_run ? ' ' + i18n.dry_run_note : '')
             );
 
             $('#yio-bulk-log').empty();
@@ -388,13 +421,13 @@ function yio_tab_bulk()
         }
 
         function showSummary(progress) {
-            var text = '<strong>Done.</strong> ' +
-                'Optimized ' + progress.optimized + ', ' +
-                'skipped ' + progress.skipped + ', ' +
-                'failed ' + progress.failed + '.';
+            var text = '<strong>' + i18n.done + '</strong> ' +
+                i18n.optimized + ' ' + progress.optimized + '، ' +
+                i18n.skipped + ' ' + progress.skipped + '، ' +
+                i18n.failed + ' ' + progress.failed + '.';
 
             if (progress.saved > 0 && !progress.dry_run) {
-                text += ' Total saved: ' + formatBytes(progress.saved) + '.';
+                text += ' ' + i18n.total_saved + ' ' + formatBytes(progress.saved) + '.';
             }
 
             $('#yio-bulk-summary').show().html(text);
@@ -406,7 +439,7 @@ function yio_tab_bulk()
             post('yio_bulk_step', {}, function (res) {
                 if (!res.success) {
                     yioBulk.running = false;
-                    logLine('ERROR: ' + res.data);
+                    logLine(i18n.error + ' ' + res.data);
                     setMode('idle');
                     return;
                 }
@@ -431,14 +464,14 @@ function yio_tab_bulk()
             var $btn = $('#yio-bulk-start');
             yioBulk.running = true;
             $btn.prop('disabled', true);
-            logLine('Starting...');
+            logLine(i18n.starting);
 
             post('yio_bulk_start', { settings: settingsPayload() }, function (res) {
                 $btn.prop('disabled', false);
 
                 if (!res.success) {
                     yioBulk.running = false;
-                    logLine('ERROR: ' + res.data);
+                    logLine(i18n.error + ' ' + res.data);
                     setMode('idle');
                     return;
                 }
@@ -460,12 +493,12 @@ function yio_tab_bulk()
             if (yioBulk.running) { return; }
 
             yioBulk.running = true;
-            logLine('Resuming...');
+            logLine(i18n.resuming);
 
             post('yio_bulk_start', { settings: settingsPayload() }, function (res) {
                 if (!res.success) {
                     yioBulk.running = false;
-                    logLine('ERROR: ' + res.data);
+                    logLine(i18n.error + ' ' + res.data);
                     return;
                 }
 
@@ -491,7 +524,7 @@ function yio_tab_bulk()
                     if (res.success) {
                         yioBulk.running = false;
                         setMode(res.data.status);
-                        logLine('Paused. The queue is preserved — you can resume anytime.');
+                        logLine(i18n.paused);
                     }
                 });
             });
