@@ -235,6 +235,10 @@ function yio_optimize_single_image($file, $metadata, $attachment_id)
             $imagick->setIteratorIndex(0);
         }
 
+        // Remember whether the source carried real transparency, so the
+        // converted file can drop a meaningless alpha channel later.
+        $source_had_alpha = $imagick->getImageAlphaChannel() !== Imagick::ALPHACHANNEL_UNDEFINED;
+
         /*
         |--------------------------------------------------------------------------
         | Auto Orientation
@@ -288,6 +292,13 @@ function yio_optimize_single_image($file, $metadata, $attachment_id)
 
         $quality = (int) yio_get_option('image_quality', 80);
         $target  = yio_output_extension();
+
+        // Watermark and noise blending can introduce an alpha channel on
+        // opaque sources (e.g. JPEG); drop it so the WebP/AVIF output
+        // stays lean.
+        if (!$source_had_alpha) {
+            $imagick->setImageAlphaChannel(Imagick::ALPHACHANNEL_REMOVE);
+        }
 
         $imagick->setImageFormat($target);
         $imagick->setImageCompressionQuality($quality);

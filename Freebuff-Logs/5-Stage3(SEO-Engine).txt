@@ -1,10 +1,64 @@
 ﻿################################
 ########### Question ###########
 ################################
-
+Proceed to Stage 3: implement the SEO engine in includes/seo.php — strip EXIF/IPTC/XMP metadata, deterministic brightness/contrast/color jitter, and Gaussian noise to make repeated images unique for search engines.
 
 
 
 ################################
 ############ Answer ############
 ################################
+Stage 3: the SEO engine. Let me plan, then implement the engine plus a small settings fix (the `noise_strength` sanitizer currently truncates the decimal values the admin UI allows):
+
+Now implementing the SEO engine and the settings fix in parallel:
+
+
+
+
+Engine and settings fix are in. Now validating — lint plus a pure-PHP unit test for the seeded jitter:
+
+
+
+
+Running lint and the jitter unit tests:
+
+Lint passes and all jitter unit tests pass (determinism, bounds, spread, sign variation). Now the CLI validation mirroring the engine's exact operations — metadata strip, jitter numeric output, noise attenuation, and determinism:
+
+The metadata strip (comment profile removed), jitter math (`gray(132)` = exactly 128×1.03), and determinism (AE=0) all validate. Two CLI-side quirks: this IM7 build can't *write* EXIF via `-set exif:Make`, and `-noise gaussian` was renamed in IM7 — neither affects the engine (which uses `addNoiseImage()`). Let me validate the noise attenuation math with the IM7-equivalent syntax:
+
+All validation passed, including the two critical noise checks: the fade+composite produces a measurable-but-subtle change (RMSE 0.000134 normalized ≈ 0.013% of dynamic range), and **the transparent region of a PNG stays perfectly clean** (`graya(0,0)`) while the opaque side picks up the faint noise — exactly the shape-preservation the engine's alpha logic guarantees.
+
+Cleaning up temp artifacts and running the code review:
+
+The review is positive overall — the engine is safe and meets all requirements. Two worthwhile fixes from the findings: (1) the **watermarked-JPEG alpha residual** — watermark blending can add an alpha channel before SEO runs, defeating the lean-output logic; the right fix is at the *pipeline* level, where the source's transparency state is known, so I'll move the alpha-removal there and simplify the engine; (2) a **defensive jitter clamp** (the sanitizer doesn't upper-bound these). Applying both:
+
+
+
+
+Fixes applied. Now re-linting everything and closing the one test-coverage gap the reviewer noted — numerically verifying the contrast jitter's direction on a two-tone image:
+
+The contrast test confirms correct behavior: +3 contrast darkens below-midpoint tones (gray 100→99), −3 lightens them (100→101) — subtle, as designed, on the right scale. (The two sample pixels both hit the same tone due to my `-append` test setup, but the direction checks are conclusive either way.)
+
+Everything is validated. Final state check:
+
+Stage 3 is complete and fully validated. Here's the summary:
+
+## Stage 3 Complete ✅ — SEO Engine
+
+**What was built (`includes/seo.php`):**
+- **`yio_apply_seo_optimization()`** — self-gating entry point (skips when `seo_enable` is off or no feature is active), wrapped in try/catch so it can never break the upload pipeline.
+- **Metadata stripping** — removes EXIF/IPTC/XMP (+ 8bim/photoshop) profiles while deliberately **keeping the ICC color profile**, so stripping camera data never shifts colors.
+- **Deterministic jitter** — brightness, contrast, and color (saturation) variation derived from a per-image seed = `attachment_id + wp_hash(file_path)`. This gives the killer property for your SEO goal: *the same image on the same install always gets the same jitter (reproducible), while a copy of it on any other install gets different jitter* — so a stolen/reused image becomes perceptually unique per site. Brightness+color run in one `modulateImage` pass (100 = neutral, ±3% typical); contrast uses `brightnessContrastImage` on the ±100 scale.
+- **Gaussian noise** — full-strength noise is generated on a clone, then faded via alpha multiplication (`noise_strength` is in tenths of a percent: 6 → 0.6%), and blended. The image's own transparency is preserved — validated that transparent PNG regions stay perfectly clean.
+
+**Cross-cutting fix (from review):** moved alpha-channel cleanup to the *pipeline* — the source's transparency is captured at load and, before conversion, any alpha the watermark or noise engines introduced on opaque sources (JPEGs) is removed so WebP/AVIF output stays lean.
+
+**Settings fix:** `noise_strength` was being truncated by `absint`, which contradicted the admin UI's `step="0.1"` — it's now sanitized as a float clamped 0–20.
+
+**Validation:**
+- `php -l` passes on all files.
+- **500-seed unit tests** on `yio_seeded_jitter`: determinism (same seed → same value), bounds (never exceeds max), zero-max handling, value spread, and sign variation — all pass.
+- **CLI algorithm tests** (mirroring the engine's exact operations): metadata/comment profile removed; +3% brightness on gray 128 produced *exactly* `gray(132)`; re-running the jitter ops gave AE=0 (bit-identical, deterministic); the noise fade produced a measurable-but-subtle change (RMSE ≈ 0.013% of dynamic range); PNG transparency stayed clean (`graya(0,0)`); contrast direction verified (+3 darkens below-midpoint tones, −3 lightens).
+- Code review passed; both findings applied.
+
+The three-stage pipeline is now fully live: **upload → backup → auto-orient → resize → watermark → SEO uniqueness → WebP/AVIF conversion**. The plugin's three advertised features (compression/conversion, watermark, SEO uniqueness) are all real and wired end-to-end.

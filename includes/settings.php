@@ -178,7 +178,6 @@ function yio_sanitize_settings($input)
             case 'watermark_padding':
             case 'text_size':
             case 'text_opacity':
-            case 'noise_strength':
             case 'brightness_jitter':
             case 'contrast_jitter':
             case 'color_jitter':
@@ -187,6 +186,12 @@ function yio_sanitize_settings($input)
             case 'keep_logs_days':
 
                 $output[$key] = absint($input[$key]);
+
+                break;
+
+            case 'noise_strength':
+
+                $output[$key] = min(20, max(0, round((float) $input[$key], 2)));
 
                 break;
 
