@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * Plugin Name: Yakuza Image Optimizer
  * Plugin URI: https://davoodya.ir
@@ -79,13 +79,6 @@ if (!yio_check_requirements()) {
 |--------------------------------------------------------------------------
 */
 
-/*
-|--------------------------------------------------------------------------
-| Includes
-|--------------------------------------------------------------------------
-*/
-
-
 $yio_files = [
 
     'helper.php',
@@ -113,13 +106,9 @@ $yio_files = [
 
 ];
 
-
-
 foreach ($yio_files as $file) {
 
-
     $path = YIO_INC . $file;
-
 
     if (file_exists($path)) {
 
@@ -161,16 +150,8 @@ add_action('plugins_loaded', function () {
         yio_admin_menu();
     }
 
-    if (function_exists('yio_logger_init')) {
-        yio_logger_init();
-    }
-
     if (function_exists('yio_image_processor_init')) {
         yio_image_processor_init();
-    }
-
-    if (function_exists('yio_bulk_init')) {
-        yio_bulk_init();
     }
 
 });

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 if (!defined('ABSPATH')) {
     exit;
 }
@@ -129,8 +129,6 @@ function yio_default_settings()
 
         'bulk_batch_size' => 20,
 		
-		'background_processing' => 1,
-
 		'dry_run' => 0,
 
 		'bulk_limit' => 0,
@@ -174,6 +172,7 @@ function yio_sanitize_settings($input)
         switch ($key) {
 
             case 'image_quality':
+            case 'watermark_image':
             case 'watermark_scale':
             case 'watermark_opacity':
             case 'watermark_padding':
@@ -191,7 +190,6 @@ function yio_sanitize_settings($input)
 
                 break;
 
-            case 'watermark_image':
             case 'text_content':
             case 'text_color':
             case 'output_format':

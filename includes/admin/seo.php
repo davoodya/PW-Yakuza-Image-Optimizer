@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 if (!defined('ABSPATH')) {
     exit;
@@ -324,7 +324,7 @@ function yio_tab_seo()
                     max="5000"
                     name="yio_settings[max_width]"
                     value="<?php echo esc_attr(
-                        $settings['max_width'] ?? 1500
+                        $settings['max_width'] ?? 2000
                     ); ?>"
                 >
 
