@@ -1,0 +1,64 @@
+﻿################################
+########### Question ###########
+################################
+Okay, let's move on to step one. Start with Step 1(Scope of Stage 1 (concrete)) and note that you will have to do all the development steps yourself from now on.
+
+
+
+################################
+############ Answer ############
+################################
+I'll execute Stage 1 now. Let me set up the plan and kick off the BOM strip + verify PHP availability in parallel with a docs check on the risky core APIs I'll use.
+
+PHP 8.3 is available locally for linting, and the docs check confirmed the recursion guard is essential. One correction from the researcher: `update_attached_file()` doesn't reliably update `post_mime_type` — so I'll set the mime type explicitly myself rather than depend on core behavior.
+
+Now stripping the BOMs from all 15 files:
+
+All 15 files are now BOM-free (`<?php` starts every file). Now writing the six files that need real changes — main file, settings, admin/seo, the new pipeline, and the two engine signatures:
+
+
+
+
+Now the core deliverable — the full processing pipeline — plus the two engine signature updates:
+
+
+
+
+All six files written. Now validating with `php -l` across the whole plugin:
+
+All 15 files pass lint. Now spawning a code review to catch logic issues before we call Stage 1 done:
+
+The reviewer flagged three real issues: (1) the failure path could leave the DB pointing at already-deleted files — I'll reorder so DB updates happen before old-file deletion, with a proper rollback of conversion artifacts; (2) an Imagick leak on the `writeImage` failure path; (3) the DRY RUN log typo. Rewriting the pipeline with the corrected flow:
+
+
+
+
+Re-linting the rewritten pipeline and re-running the review to validate the rollback reordering:
+
+All 15 files still pass lint. Let me get a focused second review pass on the reordered rollback logic:
+
+The second review confirms the rollback ordering is sound — both flagged residuals are non-blocking edge cases. Let me finalize the todos and verify the diff:
+
+Stage 1 is complete and validated. Here's the summary:
+
+## Stage 1 Complete ✅
+
+**Hardening fixes (all 15 PHP files):**
+- **UTF-8 BOMs stripped** from every file — the biggest latent bug (BOMs before `<?php` can trigger "headers already sent" errors). Verified byte-by-byte: every file now starts with `<?php`.
+- **Main file**: removed the dead `yio_logger_init()` / `yio_bulk_init()` calls and the duplicated `Includes` comment block.
+- **settings.php**: removed the duplicate `background_processing` key; `watermark_image` now sanitized with `absint` instead of `sanitize_text_field`.
+- **admin/seo.php**: `max_width` fallback aligned to the 2000px default.
+
+**The core pipeline (includes/image-processor.php, rewritten):**
+`yio_optimize_single_image()` now runs the full chain: backup original (+ raw pre-scaled file) → load with Imagick → auto-orientation (all 8 EXIF orientations) → smart resize → watermark engine hook → SEO engine hook → convert to WebP/AVIF at configured quality → keep-smaller-file check → regenerate size variants → update `_wp_attached_file`, `guid`, and mime type → delete old JPG/PNG sizes and original. Animated GIFs are detected and skipped so animations aren't flattened.
+
+**Design decisions baked in from review:**
+- **Rollback-safe ordering** (two-pass code review): conversion artifacts are tracked, the database pointer flips *last*, and old files are only deleted after the DB successfully points at the new WebP — a failure at any point leaves the original attachment fully intact.
+- **Recursion guard**: the internal `wp_generate_attachment_metadata()` call is protected by a static re-entrancy flag, so the hook can't loop.
+- **Watermark/SEO engines are wired** with the Imagick-based signatures (`yio_apply_watermark($imagick, $attachment_id)`), so Stages 2–3 drop in without touching the pipeline.
+
+**Validation:** `php -l` passes on all 15 files; two code-review passes confirmed the logic; final residuals are non-blocking edge cases.
+
+**Expected Stage-1 behavior to know:** converted WebP files still carry EXIF profiles until the Stage 3 SEO engine strips them; files that don't come out smaller keep their original format (logged); `include_webp`/`dry_run` settings already respected by the pipeline.
+
+The pipeline now delivers the plugin's #1 feature end-to-end. Next up is Stage 2 — making the watermark engine real.

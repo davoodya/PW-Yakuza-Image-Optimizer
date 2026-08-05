@@ -1,0 +1,10 @@
+﻿################################
+########### Question ###########
+################################
+Proceed to Stage 2: implement the watermark engine in includes/watermark.php using Imagick — PNG image composite and text annotation with scale, opacity, position, and padding from settings.
+
+
+
+################################
+############ Answer ############
+################################
