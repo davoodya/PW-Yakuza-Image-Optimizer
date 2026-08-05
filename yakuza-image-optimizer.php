@@ -158,4 +158,8 @@ add_action('plugins_loaded', function () {
         yio_bulk_init();
     }
 
+    if (function_exists('yio_restore_init')) {
+        yio_restore_init();
+    }
+
 });

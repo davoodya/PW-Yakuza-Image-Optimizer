@@ -51,6 +51,11 @@ function yio_process_uploaded_image($metadata, $attachment_id)
         return $metadata;
     }
 
+    // Restore operations must not re-trigger the pipeline.
+    if (yio_restore_active()) {
+        return $metadata;
+    }
+
     if (!is_array($metadata)) {
         return $metadata;
     }

@@ -376,3 +376,33 @@ function yio_prepare_backup_folder($file)
     return $backup;
 
 }
+
+/*
+|--------------------------------------------------------------------------
+| Restore Flag
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Toggle/sense the "restoring originals" state, which pauses the upload
+ * pipeline so restored images are not immediately re-optimized.
+ *
+ * @param bool|null $active
+ * @return bool
+ */
+function yio_restore_active($active = null)
+{
+
+    static $flag = false;
+
+
+    if ($active !== null) {
+
+        $flag = (bool) $active;
+
+    }
+
+
+    return $flag;
+
+}
