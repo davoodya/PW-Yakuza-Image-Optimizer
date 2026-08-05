@@ -180,6 +180,39 @@ function yio_process_uploaded_image($metadata, $attachment_id)
  */
 function yio_optimize_single_image($file, $metadata, $attachment_id)
 {
+    static $in_pipeline = false;
+
+    // Re-entrancy guard: wp_generate_attachment_metadata() called inside
+    // the pipeline re-fires the metadata filter. The upload hook sets its
+    // own guard, but bulk mode calls this function directly, so without
+    // this guard the nested filter call would re-run the whole pipeline.
+    if ($in_pipeline) {
+        return $metadata;
+    }
+
+    $in_pipeline = true;
+
+    try {
+
+        return yio_optimize_single_image_impl($file, $metadata, $attachment_id);
+
+    } finally {
+
+        $in_pipeline = false;
+
+    }
+}
+
+/**
+ * @internal Actual pipeline body; see yio_optimize_single_image().
+ *
+ * @param string $file
+ * @param array  $metadata
+ * @param int    $attachment_id
+ * @return array
+ */
+function yio_optimize_single_image_impl($file, $metadata, $attachment_id)
+{
     if (!file_exists($file)) {
         return $metadata;
     }

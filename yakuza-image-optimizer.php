@@ -154,4 +154,8 @@ add_action('plugins_loaded', function () {
         yio_image_processor_init();
     }
 
+    if (function_exists('yio_bulk_init')) {
+        yio_bulk_init();
+    }
+
 });

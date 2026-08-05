@@ -1,0 +1,10 @@
+﻿################################
+########### Question ###########
+################################
+Proceed to Stage 4: build includes/bulk.php to scan the entire attachment library and process images through yio_optimize_single_image() in batches, honoring dry_run, bulk_limit, include_webp, and background_processing settings, with a progress UI in the Bulk tab.
+
+
+
+################################
+############ Answer ############
+################################
