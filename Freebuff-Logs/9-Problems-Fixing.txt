@@ -1,0 +1,16 @@
+﻿################################
+########### Question ###########
+################################
+Fix the following problems
+1. When I try to upload an image, the image does not upload at all and this happened after activating the plugin.
+2. By activating the plugin and specifying the ID Watermark Picture, the watermark is applied to all existing images. This should not be done automatically for existing images, but the admin must do this by clicking on the Apply to All button in the plugin settings.
+3. Also, applying watermarks individually to existing images in the media menu should be available.
+4. in the Wordpress Admin => YIO Optimizer => Watermark Tab fix below problmes
+	1. Select Image for Picture Watermark using Media Library Selection(no with ID)
+	2. Color Selection for Text Watermark with Color Palette(no with HEX Code)
+
+
+
+################################
+############ Answer ############
+################################
