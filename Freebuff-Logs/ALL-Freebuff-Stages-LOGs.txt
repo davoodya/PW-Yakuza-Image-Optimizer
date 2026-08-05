@@ -217,3 +217,72 @@ Stage 1 is complete and validated. Here's the summary:
 **Expected Stage-1 behavior to know:** converted WebP files still carry EXIF profiles until the Stage 3 SEO engine strips them; files that don't come out smaller keep their original format (logged); `include_webp`/`dry_run` settings already respected by the pipeline.
 
 The pipeline now delivers the plugin's #1 feature end-to-end. Next up is Stage 2 — making the watermark engine real.
+
+################################
+########### Question ###########
+################################
+Proceed to Stage 2: implement the watermark engine in includes/watermark.php using Imagick — PNG image composite and text annotation with scale, opacity, position, and padding from settings.
+
+
+
+################################
+############ Answer ############
+################################
+Stage 2: implementing the watermark engine. Let me plan and, in parallel, check whether local PHP has Imagick (that would let me functionally validate the engine, not just lint it):
+
+Local PHP lacks the imagick extension, but ImageMagick 7.1.2 CLI is available — so I can validate the *algorithm* (position math, opacity semantics, trim) via CLI and pure-PHP unit tests, plus `php -l` and code review for the PHP API layer. Writing the watermark engine now:
+
+
+
+
+Watermark engine written. Now validating: lint all files, plus a pure-PHP unit test of the position helper (no Imagick needed), and a CLI test of the opacity/composite/trim algorithm that mirrors the engine's operations:
+
+
+
+
+All 11 position tests pass. Now validating the image-processing algorithm itself (opacity fade + composite at computed position + text trim) using the ImageMagick CLI, which mirrors exactly what the PHP engine does:
+
+The core algorithm is verified — the stamp center pixel is exactly the expected 50% blend `srgb(153,51,76)` of red over `#336699`, the untouched area stays pure `#336699`, and text trim yields a tight 136×22 bounding box. The only failure was my test's pipe syntax on Windows, not the engine. Let me redo that last check cleanly, then clean up:
+
+`(40,20)` landing on background is likely my sample point hitting a gap between glyphs — let me verify decisively by counting changed pixels and sampling inside a letter:
+
+The text composite is confirmed: 1125 pixels changed in the top-left region with visible blending inside the letterform — my earlier sample points just hit glyph gaps. One final density check on the text stamp, then cleanup:
+
+Glyph density of 28% within the trimmed box is normal for text strokes — validation complete, temp files cleaned up. Final step: code review of the engine:
+
+The review is positive — the engine is correct and complete. Two follow-ups to handle: (1) settle the PNG shape-preservation question decisively, and (2) the optional text-canvas memory optimization. Let me verify the alpha behavior first with a pixel sample in the stamp's transparent border:
+
+Decisive result: the stamp's transparent border stays pure `#336699` while the interior shows the exact 50% blend — **PNG shape alpha is preserved** by the `ALPHACHANNEL_SET` + alpha-multiply fade, and JPEG stamps get a uniform fade. The engine's fade logic is fully validated.
+
+Now applying the reviewer's one worthwhile optimization — bounding the text canvas to a generous text-size estimate instead of the full image (prevents a transient ~96MB allocation on huge sources with smart-resize off):
+
+
+
+
+Re-linting after the edit and cleaning up test artifacts:
+
+Lint passed and temp artifacts are removed (the git error was just my `cd /` before checking — let me verify the repo state properly):
+
+The earlier cleanup ran from the wrong directory — `tmp-wm-test.php` is still in the project root. Removing it properly:
+
+Stage 2 is complete and validated. Here's the summary:
+
+## Stage 2 Complete ✅ — Watermark Engine
+
+**What was built (`includes/watermark.php`):**
+- **`yio_apply_watermark()`** — self-gating entry point: if both `watermark_enable` and `text_enable` are off, the image passes through untouched. All engine errors are swallowed and logged, so a watermark failure can never break the upload pipeline.
+- **`yio_apply_image_watermark()`** — loads the watermark PNG by attachment ID, scales its width to the configured `watermark_scale` % (never exceeding image dimensions), fades it via alpha-channel multiply (`watermark_opacity`), and composites it at one of 9 positions with `watermark_padding`. Includes guards for a missing watermark file and for the pathological case where the image being processed *is* the watermark.
+- **`yio_apply_text_watermark()`** — renders `text_content` on a transparent canvas, trims it to its tight bounding box, fades it (`text_opacity`), and composites it at `text_position`. Color is hex-validated with a safe `#FFFFFF` fallback.
+- **`yio_watermark_position()`** — shared 9-position math with clamping, used by both engines.
+
+**Validation (local PHP has no Imagick, so I validated three layers):**
+- `php -l` passes on all files.
+- **11/11 unit tests** passed on the position math (all 9 positions + oversized-stamp clamping + unknown-position fallback).
+- **Algorithm proven with the ImageMagick 7.1 CLI** mirroring the engine's exact operations: the stamp center pixel came out to the *exact* expected 50% blend `srgb(153,51,76)` of red over `#336699`; the untouched area stayed pure; a transparent PNG stamp's border pixels stayed clean — proving `ALPHACHANNEL_SET` + alpha-multiply fades a watermark **while preserving its shape** (and uniformly fades JPEG stamps); text render→trim produced a tight 136×22 bounding box, and the composited text changed 1125 pixels with correct blending.
+- Code review passed; applied its one worthwhile suggestion — the text canvas is now sized from a generous 1.2em/byte estimate instead of the full image, avoiding a transient multi-MB allocation on huge sources when smart-resize is off.
+
+**One known limitation:** text glyphs depend on fonts installed on the server — Latin text renders everywhere, but Persian/Arabic requires a server font that covers those scripts (worth a note in the admin UI later).
+
+**Wired end-to-end:** the Stage 1 pipeline already calls `yio_apply_watermark()` between resize and conversion, so the engine is live the moment it's active — no pipeline changes were needed.
+
+
