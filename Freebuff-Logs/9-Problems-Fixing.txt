@@ -14,3 +14,159 @@ Fix the following problems
 ################################
 ############ Answer ############
 ################################
+I'll start by reading the critical files to diagnose the upload-breaking bug and understand the current watermark/pipeline wiring:
+
+I have the full pipeline picture. Before fixing, let me read the remaining upload-path files (logger + seo engine) and the current admin UI files I'll modify:
+
+I've diagnosed all four issues. Key findings:
+
+1. **Upload breaks / existing images auto-processed — same root cause**: the filter runs on *every* `wp_generate_attachment_metadata` call — including WordPress's lazy metadata regeneration for *existing* images (browsing the library can trigger it), and `yio_log()` uses an un-suppressed `file_put_contents` that can emit warnings into the AJAX upload response. I'll add a **new-upload-only marker** (set on `add_attachment`, consumed by the filter) so existing images are never touched automatically, harden logging, and raise memory/time limits.
+
+2. **"Apply to All"** — a watermark-only batch mode in the bulk engine + UI in the Watermark tab.
+
+3. **Per-image watermark** — a "Apply Watermark" row action + bulk action in the Media Library.
+
+4. **Watermark tab UI** — `wp.media` library picker (no ID field) + native color palette (no hex input).
+
+Starting with the logger hardening — this is likely the silent upload-killer, since `file_put_contents` warnings can corrupt the AJAX upload JSON response:
+
+
+
+
+The logger is hardened. Now the core fix for both the upload failure and the "watermark applied to all existing images" problem: a **new-upload-only marker**. WordPress lazily regenerates metadata for existing images (e.g., when browsing the library), which fires the plugin's filter — that's exactly how existing images get processed automatically. I'll mark attachments as new on `add_attachment` and only process those, plus add memory/time-limit raising:
+
+
+
+
+The core diagnosis is confirmed. Now adding the watermark-only engine to `includes/watermark.php` (used by "Apply to All" and the per-image media actions):
+
+
+
+
+Continuing. Now adding the watermark-only mode to the bulk engine:
+
+Now adding the watermark mode to the bulk engine:
+
+
+
+
+Now I need to fix a bucket-mapping detail: the watermark pass returns `watermarked` but the state counter/progress schema expects `optimized`/`skipped`/`failed`. Mapping it so the summary counts land correctly:
+
+
+
+
+Continuing. Now the Watermark tab rewrite — media picker, color palette, and the Apply-to-All run UI:
+
+
+
+
+Watermark tab done. Now the Media Library per-image actions file:
+
+
+
+
+Now wiring everything together: persist watermark settings on run start, enqueue the media library on the admin page, include the new media-actions file, and gate the Bulk tab's JS by run mode:
+
+
+
+
+Continuing. I spotted a bug in what I just wrote: the watermark tab's `watermarkSettings()` reads Bulk-tab inputs that don't exist on the Watermark tab, and the PHP would persist bulk defaults (clobbering the user's bulk settings). Fixing both — watermark mode should persist only watermark fields, and the JS payload should send only watermark form values:
+
+
+
+
+The PHP fix applied; the JS function lives in `includes/admin/watermark.php`. Fixing it there:
+
+
+
+
+Now wiring the main plugin file — include the media-actions file, init it, and enqueue the Media Library scripts on the admin page:
+
+Wiring the new media-actions file into the main plugin, adding the media-library script enqueue, and init hook:
+
+
+
+
+Continuing — gating the Bulk tab JS so it only handles optimize-mode runs and never steals a watermark run:
+
+
+
+
+All code changes are in place. Now updating the translation catalog — the Watermark tab's labels changed (`Watermark Image ID` → `Watermark Image`, removed the old description), and many new strings were added (Apply-to-All UI, media actions, watermark engine messages):
+
+
+
+
+Now adding the plural notice string to the catalog, then rebuilding the .mo compiler with plural-entry support:
+
+
+
+
+Now I'll rebuild the MO compiler with plural-entry support (the `_n()` string) and re-verify:
+
+
+
+
+Running the .mo rebuild and verification:
+
+MO rebuilt perfectly — 161 entries round-tripped, all strings covered. Now full validation and cleanup:
+
+All validation passes. Let me add a functional stub-test for the new-upload marker logic (the core fix — verifying that existing images are never auto-processed), then run the code review:
+
+
+
+
+The stub needs the WP `HOUR_IN_SECONDS` constant. Fixing and re-running:
+
+
+
+
+All marker tests pass. Running the final code review on all the changes:
+
+The review confirms the design is sound. Applying the three worthwhile fixes: (1) backup the file before in-place watermark overwrite (so "Apply to All" is undoable via the restore system), (2) Imagick object cleanup on the write-failure path in both engines, (3) remove the dead `total_saved` i18n key from the watermark tab.
+
+
+
+
+Applying the remaining review fixes — the Imagick cleanup on the write-failure path in the pipeline, and the dead i18n key:
+
+
+
+
+Final validation after the review fixes:
+
+All checks pass. Finalizing the todo list:
+
+All four problems are fixed and validated. Here's what was wrong and what I changed:
+
+## 1. Uploads broke after activating the plugin
+
+The root cause: the plugin's filter ran on **every** `wp_generate_attachment_metadata` call — not just new uploads. WordPress lazily regenerates metadata for *existing* images (browsing the Media Library, thumbnail regeneration, imports), so the pipeline fired on those too, and `yio_log()` used an unsuppressed `file_put_contents` — a single PHP warning would corrupt the AJAX upload response and make the upload fail entirely.
+
+**Fixes:**
+- **New-upload-only marker** (`image-processor.php`): `add_attachment` now sets a transient flag; the pipeline early-returns unless that flag is present and consumes it. Existing images are **never** auto-processed, no matter what triggers metadata regeneration. Verified with a functional test: new upload → processed; existing/re-generated → skipped; marker consumed exactly once; restore-pause still works.
+- **Hardened `yio_log()`**: guards the uploads dir and uses `@file_put_contents` + `LOCK_EX`, so logging can never emit output into an AJAX response.
+- **Memory/time raising** inside the filter before processing (`wp_raise_memory_limit('image')`, `set_time_limit(300)`).
+
+## 2. Watermark applied to ALL existing images — now impossible
+
+Same root cause as #1 — the filter was running on existing images. With the marker, the pipeline runs **only** on genuinely new uploads. Existing images are now watermarked **only** when you explicitly act:
+- **"Apply to All" button** in the Watermark tab — starts a watermark-only batch run (via the bulk engine in a new `watermark` mode that reuses progress bar/log/pause/resume/cron, applies the watermark without converting formats).
+- **Per-image "Apply Watermark"** in the Media Library.
+
+## 3. Per-image watermark in the Media menu
+
+New `includes/admin/media-actions.php`: an **"Apply Watermark" row action** under each image in the Media Library list view, plus a matching **bulk action** for multiple selections. Both are nonce-protected, capability-checked, and show a success/failure notice after redirecting back. They use a new `yio_apply_watermark_existing()` engine that watermarks in place (keeping the current format), backs up the pre-watermark file first so the restore system can undo it, and regenerates sizes with the pipeline paused.
+
+## 4. Watermark tab UI fixes
+
+- **Media Library picker instead of ID input**: a "Select Image" button opens the standard WordPress media picker (`wp.media`), shows a thumbnail preview with a Remove button, and stores the selected attachment ID in the hidden settings field.
+- **Color palette instead of hex text**: the Text Color field is now a native `type="color"` color-picker input (with a validated `#rrggbb` fallback).
+
+## Validation
+- `php -l` clean on all files; `node --check` passes on all three tabs' inline JS.
+- `.po` catalog updated (161 entries incl. the new `_n()` plural) and `.mo` rebuilt — round-trip verified against a POMO-equivalent reader, 100% source coverage.
+- Functional marker test: all 6 scenarios pass.
+- Code review completed; applied its findings (backup-before-overwrite, Imagick cleanup on failure paths, dead i18n key removal).
+
+One behavior note: because processing is now gated to `add_attachment`, uploads made by exotic importers that bypass that hook (rare) will skip auto-optimization — that's the safe trade-off for "never touch existing images."
