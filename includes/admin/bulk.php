@@ -466,7 +466,7 @@ function yio_tab_bulk()
             $btn.prop('disabled', true);
             logLine(i18n.starting);
 
-            post('yio_bulk_start', { settings: settingsPayload() }, function (res) {
+            post('yio_bulk_start', { settings: settingsPayload(), mode: 'optimize' }, function (res) {
                 $btn.prop('disabled', false);
 
                 if (!res.success) {
@@ -495,7 +495,7 @@ function yio_tab_bulk()
             yioBulk.running = true;
             logLine(i18n.resuming);
 
-            post('yio_bulk_start', { settings: settingsPayload() }, function (res) {
+            post('yio_bulk_start', { settings: settingsPayload(), mode: 'optimize' }, function (res) {
                 if (!res.success) {
                     yioBulk.running = false;
                     logLine(i18n.error + ' ' + res.data);
@@ -531,10 +531,16 @@ function yio_tab_bulk()
 
             // On load, pick up a run that is still active (e.g. after a
             // page reload or when cron continued it in the background).
+            // Watermark-mode runs belong to the Watermark tab, not here.
             post('yio_bulk_status', {}, function (res) {
                 if (!res.success) { return; }
 
                 var p = res.data;
+
+                if (p.mode && p.mode !== 'optimize') {
+                    setMode('idle');
+                    return;
+                }
 
                 if (p.status === 'running') {
                     render(p);

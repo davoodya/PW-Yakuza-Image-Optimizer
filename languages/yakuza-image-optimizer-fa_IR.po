@@ -132,12 +132,40 @@ msgid "Enable image watermark"
 msgstr "فعال‌سازی واترمارک تصویری"
 
 #: includes/admin/watermark.php
-msgid "Watermark Image ID"
-msgstr "شناسه تصویر واترمارک"
+msgid "Watermark Image"
+msgstr "تصویر واترمارک"
 
 #: includes/admin/watermark.php
-msgid "Enter WordPress Media Attachment ID."
-msgstr "شناسه پیوست رسانه وردپرس را وارد کنید."
+msgid "Select Image"
+msgstr "انتخاب تصویر"
+
+#: includes/admin/watermark.php
+msgid "Remove"
+msgstr "حذف"
+
+#: includes/admin/watermark.php
+msgid "Choose the watermark image from the Media Library."
+msgstr "تصویر واترمارک را از کتابخانه رسانه انتخاب کنید."
+
+#: includes/admin/watermark.php
+msgid "Pick the text color from the color palette."
+msgstr "رنگ متن را از پالت رنگ انتخاب کنید."
+
+#: includes/admin/watermark.php
+msgid "Apply Watermark to Existing Images"
+msgstr "اعمال واترمارک روی تصاویر موجود"
+
+#: includes/admin/watermark.php
+msgid "Existing images are never watermarked automatically. Use the button below to apply the watermark to every image in the library now. Images keep their current format — no conversion happens."
+msgstr "تصاویر موجود هرگز به‌صورت خودکار واترمارک نمی‌شوند. برای اعمال واترمارک روی همه تصاویر کتابخانه همین حالا از دکمه زیر استفاده کنید. تصاویر فرمت فعلی خود را حفظ می‌کنند — هیچ تبدیلی انجام نمی‌شود."
+
+#: includes/admin/watermark.php
+msgid "Apply to All"
+msgstr "اعمال روی همه"
+
+#: includes/admin/watermark.php
+msgid "watermarked"
+msgstr "واترمارک‌شده"
 
 #: includes/admin/watermark.php
 msgid "Watermark Scale (%)"
@@ -532,6 +560,14 @@ msgid "No images found to optimize."
 msgstr "تصویری برای بهینه‌سازی یافت نشد."
 
 #: includes/bulk.php
+msgid "No images found to watermark."
+msgstr "تصویری برای واترمارک یافت نشد."
+
+#: includes/bulk.php
+msgid "#%1$d: [dry run] would watermark %2$s"
+msgstr "#%1$d: [اجرای آزمایشی] %2$s واترمارک خواهد شد"
+
+#: includes/bulk.php
 msgid "#%1$d: file missing on disk"
 msgstr "#%1$d: فایل روی دیسک وجود ندارد"
 
@@ -594,3 +630,32 @@ msgstr "#%1$d: ایجاد پیوست ممکن نشد"
 #: includes/restore.php
 msgid "#%1$d: restored as new attachment #%2$d"
 msgstr "#%1$d: به‌عنوان پیوست جدید #%2$d بازیابی شد"
+
+#: includes/watermark.php
+msgid "#%1$d: watermark disabled"
+msgstr "#%1$d: واترمارک غیرفعال است"
+
+#: includes/watermark.php
+msgid "#%1$d: could not write watermarked file"
+msgstr "#%1$d: نوشتن فایل واترمارک‌شده ممکن نشد"
+
+#: includes/watermark.php
+msgid "#%1$d: watermarked %2$s"
+msgstr "#%1$d: %2$s واترمارک شد"
+
+#: includes/admin/media-actions.php
+msgid "Apply Watermark"
+msgstr "اعمال واترمارک"
+
+#: includes/admin/media-actions.php
+msgid "No images were watermarked."
+msgstr "هیچ تصویری واترمارک نشد."
+
+#: includes/admin/media-actions.php
+msgid "Watermark applied to %d image."
+msgid_plural "Watermark applied to %d images."
+msgstr[0] "واترمارک روی %d تصویر اعمال شد."
+
+#: includes/admin/media-actions.php
+msgid "Could not apply the watermark to that image. Check the debug log for details."
+msgstr "اعمال واترمارک روی آن تصویر ممکن نشد. برای جزئیات، گزارش اشکال‌زدایی را بررسی کنید."

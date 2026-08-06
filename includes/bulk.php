@@ -39,11 +39,34 @@ function yio_bulk_ajax_start()
         wp_send_json_error(__('The optimizer is disabled. Enable it in the General settings first.', 'yakuza-image-optimizer'));
     }
 
+    // Which job are we running? "optimize" (default) or "watermark"
+    // (the Apply-to-All run from the Watermark tab).
+    $mode = (isset($_POST['mode']) && $_POST['mode'] === 'watermark') ? 'watermark' : 'optimize';
+
     // The run UI sits inside the settings form, so persist the current
     // field values (sanitized) together with the run request.
     if (isset($_POST['settings']) && is_array($_POST['settings'])) {
 
-        $keys = array('background_processing', 'bulk_batch_size', 'dry_run', 'bulk_limit', 'include_webp');
+        // A watermark run persists only the watermark fields exactly as
+        // they appear in the form, even if the admin has not saved them
+        // yet. Bulk/optimize runs persist only the bulk fields. Neither
+        // may clobber the other tab's saved settings.
+        $keys = ($mode === 'watermark')
+            ? array(
+                'watermark_enable',
+                'watermark_image',
+                'watermark_scale',
+                'watermark_opacity',
+                'watermark_position',
+                'watermark_padding',
+                'text_enable',
+                'text_content',
+                'text_size',
+                'text_opacity',
+                'text_position',
+                'text_color',
+            )
+            : array('background_processing', 'bulk_batch_size', 'dry_run', 'bulk_limit', 'include_webp');
 
         $sanitized = yio_sanitize_settings(wp_unslash($_POST['settings']));
 
@@ -60,6 +83,7 @@ function yio_bulk_ajax_start()
         !empty($existing['status'])
         && $existing['status'] === 'paused'
         && get_transient('yio_bulk_queue')
+        && (!empty($existing['mode']) ? $existing['mode'] : 'optimize') === $mode
     ) {
 
         $existing['status'] = 'running';
@@ -73,12 +97,13 @@ function yio_bulk_ajax_start()
 
     yio_bulk_reset_state();
 
-    $ids = yio_bulk_scan();
+    $ids = yio_bulk_scan($mode);
 
     if (empty($ids)) {
 
         wp_send_json_success(array(
             'status'    => 'done',
+            'mode'      => $mode,
             'total'     => 0,
             'processed' => 0,
             'optimized' => 0,
@@ -86,7 +111,9 @@ function yio_bulk_ajax_start()
             'failed'    => 0,
             'saved'     => 0,
             'dry_run'   => (int) yio_get_option('dry_run', 0),
-            'log'       => array(__('No images found to optimize.', 'yakuza-image-optimizer')),
+            'log'       => array($mode === 'watermark'
+                ? __('No images found to watermark.', 'yakuza-image-optimizer')
+                : __('No images found to optimize.', 'yakuza-image-optimizer')),
         ));
     }
 
@@ -94,6 +121,7 @@ function yio_bulk_ajax_start()
 
     yio_bulk_state(array(
         'status'    => 'running',
+        'mode'      => $mode,
         'total'     => count($ids),
         'processed' => 0,
         'optimized' => 0,
@@ -242,11 +270,13 @@ function yio_bulk_process_batch()
 
     $dry_run = (int) yio_get_option('dry_run', 0);
 
+    $mode = !empty($state['mode']) ? $state['mode'] : 'optimize';
+
     foreach ($batch as $attachment_id) {
 
         $attachment_id = (int) $attachment_id;
 
-        $result = yio_bulk_process_attachment($attachment_id, $dry_run);
+        $result = yio_bulk_process_attachment($attachment_id, $dry_run, $mode);
 
         $state['processed']++;
         $state[$result['bucket']]++;
@@ -273,14 +303,39 @@ function yio_bulk_process_batch()
 }
 
 /**
- * Optimize a single attachment for the bulk run.
+ * Optimize or watermark a single attachment for a bulk run.
  *
- * @param int $attachment_id
- * @param int $dry_run
+ * @param int    $attachment_id
+ * @param int    $dry_run
+ * @param string $mode 'optimize' or 'watermark'.
  * @return array {bucket, saved, message}
  */
-function yio_bulk_process_attachment($attachment_id, $dry_run)
+function yio_bulk_process_attachment($attachment_id, $dry_run, $mode = 'optimize')
 {
+    // Watermark-only pass (Apply to All from the Watermark tab): the
+    // existing file is kept in its current format and never converted.
+    if ($mode === 'watermark') {
+
+        if ($dry_run) {
+            return array('bucket' => 'skipped', 'saved' => 0, 'message' => sprintf(
+                __('#%1$d: [dry run] would watermark %2$s', 'yakuza-image-optimizer'),
+                $attachment_id,
+                basename(get_attached_file($attachment_id) ?: '')
+            ));
+        }
+
+        $result = yio_apply_watermark_existing($attachment_id);
+
+        // "watermarked" results are counted in the optimized bucket so
+        // the shared state/progress schema (optimized/skipped/failed)
+        // stays consistent across both run modes.
+        return array(
+            'bucket'  => $result['bucket'] === 'watermarked' ? 'optimized' : $result['bucket'],
+            'saved'   => 0,
+            'message' => $result['message'],
+        );
+    }
+
     $file = get_attached_file($attachment_id);
 
     if (!$file || !file_exists($file)) {
@@ -384,10 +439,12 @@ function yio_bulk_process_attachment($attachment_id, $dry_run)
 
 /**
  * All candidate attachment IDs, honoring bulk_limit and include_webp.
+ * In watermark mode every image is a candidate (no format filtering).
  *
+ * @param string $mode 'optimize' or 'watermark'.
  * @return int[]
  */
-function yio_bulk_scan()
+function yio_bulk_scan($mode = 'optimize')
 {
     $query = new WP_Query(array(
         'post_type'              => 'attachment',
@@ -408,7 +465,7 @@ function yio_bulk_scan()
     }
 
     // When include_webp is off, drop files already in the target format.
-    if (!yio_get_option('include_webp', 0)) {
+    if ($mode !== 'watermark' && !yio_get_option('include_webp', 0)) {
 
         $target = yio_output_extension();
 
@@ -470,6 +527,7 @@ function yio_bulk_progress()
 
     return array(
         'status'    => !empty($state['status']) ? $state['status'] : 'idle',
+        'mode'      => !empty($state['mode']) ? $state['mode'] : 'optimize',
         'total'     => (int) ($state['total'] ?? 0),
         'processed' => (int) ($state['processed'] ?? 0),
         'optimized' => (int) ($state['optimized'] ?? 0),

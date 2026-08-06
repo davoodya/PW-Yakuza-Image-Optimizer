@@ -245,6 +245,131 @@ function yio_apply_text_watermark($imagick, $attachment_id)
 
 /*
 |--------------------------------------------------------------------------
+| Watermark Existing Attachment
+|--------------------------------------------------------------------------
+*/
+
+/**
+ * Apply the configured watermark(s) to an existing attachment, keeping its
+ * current file format (no conversion).
+ *
+ * Used by the "Apply to All" run and the per-image Media Library actions.
+ * Never runs automatically — existing images are only watermarked when an
+ * admin explicitly triggers this.
+ *
+ * @param int $attachment_id
+ * @return array {bucket: watermarked|skipped|failed, message}
+ */
+function yio_apply_watermark_existing($attachment_id)
+{
+    $attachment_id = (int) $attachment_id;
+
+    if (
+        !yio_get_option('watermark_enable', 1)
+        &&
+        !yio_get_option('text_enable', 0)
+    ) {
+        return array('bucket' => 'skipped', 'message' => sprintf(
+            __('#%1$d: watermark disabled', 'yakuza-image-optimizer'),
+            $attachment_id
+        ));
+    }
+
+    $file = get_attached_file($attachment_id);
+
+    if (!$file || !file_exists($file)) {
+        return array('bucket' => 'failed', 'message' => sprintf(
+            __('#%1$d: file missing on disk', 'yakuza-image-optimizer'),
+            $attachment_id
+        ));
+    }
+
+    $ext = strtolower(pathinfo($file, PATHINFO_EXTENSION));
+
+    if ($ext === 'gif' && yio_is_animated_gif($file)) {
+        return array('bucket' => 'skipped', 'message' => sprintf(
+            __('#%1$d: animated GIF skipped', 'yakuza-image-optimizer'),
+            $attachment_id
+        ));
+    }
+
+    try {
+
+        $imagick = new Imagick($file);
+
+        if ($imagick->getNumberImages() > 1) {
+            $imagick->setIteratorIndex(0);
+        }
+
+        // Back up the current (pre-watermark) file so the restore system
+        // can bring it back. Idempotent: skips when a backup already
+        // exists for this path.
+        if (yio_get_option('backup_original', 1)) {
+            yio_create_backup($file);
+        }
+
+        $imagick = yio_apply_watermark($imagick, $attachment_id);
+
+        // Keep the file's current format; just write the watermarked
+        // pixels back over it.
+        $quality = (int) yio_get_option('image_quality', 80);
+
+        $imagick->setImageCompressionQuality($quality);
+        $imagick->setCompressionQuality($quality);
+
+        try {
+            $written = $imagick->writeImage($file);
+        } finally {
+            $imagick->clear();
+            $imagick->destroy();
+        }
+
+        if (!$written) {
+            return array('bucket' => 'failed', 'message' => sprintf(
+                __('#%1$d: could not write watermarked file', 'yakuza-image-optimizer'),
+                $attachment_id
+            ));
+        }
+
+        // Regenerate the size variants from the watermarked file. Pause
+        // the pipeline so the metadata filter does not re-optimize it.
+        yio_restore_active(true);
+
+        try {
+
+            $metadata = wp_generate_attachment_metadata($attachment_id, $file);
+
+            if (is_array($metadata)) {
+                wp_update_attachment_metadata($attachment_id, $metadata);
+            }
+
+        } finally {
+
+            yio_restore_active(false);
+        }
+
+        yio_log('Watermark applied to existing attachment #' . $attachment_id . ': ' . $file);
+
+        return array('bucket' => 'watermarked', 'message' => sprintf(
+            __('#%1$d: watermarked %2$s', 'yakuza-image-optimizer'),
+            $attachment_id,
+            basename($file)
+        ));
+
+    } catch (Throwable $e) {
+
+        yio_log('Watermark apply error on #' . $attachment_id . ': ' . $e->getMessage());
+
+        return array('bucket' => 'failed', 'message' => sprintf(
+            __('#%1$d: error — %2$s', 'yakuza-image-optimizer'),
+            $attachment_id,
+            $e->getMessage()
+        ));
+    }
+}
+
+/*
+|--------------------------------------------------------------------------
 | Watermark Position Helper
 |--------------------------------------------------------------------------
 */

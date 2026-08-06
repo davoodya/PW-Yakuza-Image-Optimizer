@@ -93,6 +93,7 @@ $yio_files = [
     'admin/seo.php',
     'admin/backup.php',
     'admin/bulk.php',
+    'admin/media-actions.php',
 
     'backup.php',
     'restore.php',
@@ -157,6 +158,21 @@ add_action('plugins_loaded', function () {
     if (function_exists('yio_restore_init')) {
         yio_restore_init();
     }
+
+    if (function_exists('yio_media_actions_init')) {
+        yio_media_actions_init();
+    }
+
+});
+
+// The Watermark tab uses the Media Library picker (wp.media).
+add_action('admin_enqueue_scripts', function () {
+
+    if (empty($_GET['page']) || $_GET['page'] !== 'yakuza-image-optimizer') {
+        return;
+    }
+
+    wp_enqueue_media();
 
 });
 
